@@ -1,0 +1,28 @@
+networks:
+  internal:
+  infra:
+    external: true
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: math_backend
+    volumes:
+      - ./data:/app/data
+    networks:
+      - internal
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: math_frontend
+    networks:
+      - internal
+      - infra
+    depends_on:
+      - backend
+    restart: unless-stopped
