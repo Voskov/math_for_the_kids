@@ -1,0 +1,266 @@
+import { useEffect, useRef, useState } from "react";
+import { api, type Kid, type NextProblem, type SubmitResult } from "../api";
+import { S } from "../strings";
+
+interface Props {
+  kid: Kid;
+  topic: string;
+  sessionId: number;
+  onDone: () => void;
+}
+
+type Phase = "loading" | "answering" | "feedback" | "done";
+
+export default function Session({ kid, topic: _topic, sessionId, onDone }: Props) {
+  const [phase, setPhase] = useState<Phase>("loading");
+  const [problem, setProblem] = useState<NextProblem | null>(null);
+  const [answer, setAnswer] = useState("");
+  const [result, setResult] = useState<SubmitResult | null>(null);
+  const [difficulty, setDifficulty] = useState(0);
+  const startTimeRef = useRef<number>(Date.now());
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  async function loadNext() {
+    setPhase("loading");
+    setAnswer("");
+    setResult(null);
+    const p = await api.nextProblem(sessionId);
+    if (p.done) {
+      setPhase("done");
+      return;
+    }
+    setProblem(p);
+    setDifficulty(p.difficulty);
+    setPhase("answering");
+    startTimeRef.current = Date.now();
+    setTimeout(() => inputRef.current?.focus(), 50);
+  }
+
+  useEffect(() => {
+    loadNext();
+  }, []);
+
+  async function handleSubmit() {
+    if (!problem || !answer.trim()) return;
+    const timeTaken = (Date.now() - startTimeRef.current) / 1000;
+    const r = await api.submitAnswer(problem.problem_id, answer.trim(), timeTaken);
+    setResult(r);
+    setDifficulty(r.new_difficulty);
+    setPhase("feedback");
+    if (r.session_done) {
+      setTimeout(onDone, 1400);
+    }
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter") handleSubmit();
+  }
+
+  const prevDiffRef = useRef(difficulty);
+  const levelChange =
+    result && difficulty !== prevDiffRef.current
+      ? difficulty > prevDiffRef.current
+        ? S.levelUp
+        : S.levelDown
+      : S.levelSame;
+
+  useEffect(() => {
+    if (phase === "answering") prevDiffRef.current = difficulty;
+  }, [phase, difficulty]);
+
+  return (
+    <div style={styles.container}>
+      {/* Header */}
+      <div style={styles.header}>
+        <span style={styles.kidBadge}>{kid.avatar_emoji} {kid.name}</span>
+        <span style={styles.levelBadge}>{S.level}: {Math.floor(difficulty)}</span>
+      </div>
+
+      {/* Progress */}
+      {problem && (
+        <div style={styles.progressRow}>
+          <div style={styles.progressBar}>
+            <div
+              style={{
+                ...styles.progressFill,
+                width: `${((problem.session_problem_number - 1) / problem.total_problems) * 100}%`,
+              }}
+            />
+          </div>
+          <span style={styles.progressLabel}>
+            {S.problemOf(problem.session_problem_number, problem.total_problems)}
+          </span>
+        </div>
+      )}
+
+      {/* Card */}
+      <div style={styles.card}>
+        {phase === "loading" && <p style={styles.loading}>...</p>}
+
+        {(phase === "answering" || phase === "feedback") && problem && (
+          <>
+            <p style={styles.question}>{problem.question}</p>
+
+            <div style={styles.inputRow}>
+              <input
+                ref={inputRef}
+                style={{
+                  ...styles.input,
+                  borderColor:
+                    phase === "feedback"
+                      ? result?.is_correct
+                        ? "var(--success)"
+                        : "var(--error)"
+                      : "var(--border)",
+                }}
+                type="text"
+                inputMode="decimal"
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                onKeyDown={handleKeyDown}
+                disabled={phase === "feedback"}
+                placeholder={S.answer}
+              />
+              {phase === "answering" && (
+                <button style={styles.submitBtn} onClick={handleSubmit} disabled={!answer.trim()}>
+                  {S.submit}
+                </button>
+              )}
+            </div>
+
+            {phase === "answering" && (
+              <div style={styles.numpad}>
+                {["7","8","9","4","5","6","1","2","3"].map((k) => (
+                  <button key={k} style={styles.numkey} onClick={() => setAnswer((a) => a + k)}>
+                    {k}
+                  </button>
+                ))}
+                <button style={styles.numkey} onClick={() => setAnswer((a) => a.slice(0, -1))}>⌫</button>
+                <button style={styles.numkey} onClick={() => setAnswer((a) => a + "0")}>0</button>
+                <button style={styles.numkey} onClick={() => setAnswer((a) => a + "/")}>／</button>
+              </div>
+            )}
+
+            {phase === "feedback" && result && (
+              <div style={styles.feedback}>
+                <p
+                  style={{
+                    ...styles.feedbackText,
+                    color: result.is_correct ? "var(--success)" : "var(--error)",
+                  }}
+                >
+                  {result.is_correct ? S.correct : S.wrong(result.correct_answer)}
+                </p>
+                {levelChange && <p style={styles.levelChange}>{levelChange}</p>}
+                {!result.session_done && (
+                  <button style={styles.nextBtn} onClick={loadNext}>
+                    {S.next} ←
+                  </button>
+                )}
+              </div>
+            )}
+          </>
+        )}
+
+        {phase === "done" && (
+          <p style={styles.loading}>{S.sessionComplete}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+const styles: Record<string, React.CSSProperties> = {
+  container: { maxWidth: 520, width: "100%" },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  kidBadge: { fontSize: 18, fontWeight: 600 },
+  levelBadge: {
+    fontSize: 14,
+    fontWeight: 600,
+    background: "var(--primary)",
+    color: "#fff",
+    padding: "4px 12px",
+    borderRadius: 999,
+  },
+  progressRow: { marginBottom: 20 },
+  progressBar: {
+    height: 6,
+    background: "var(--border)",
+    borderRadius: 999,
+    overflow: "hidden",
+    marginBottom: 6,
+  },
+  progressFill: {
+    height: "100%",
+    background: "var(--primary)",
+    borderRadius: 999,
+    transition: "width 0.3s",
+  },
+  progressLabel: { fontSize: 13, color: "var(--text-muted)" },
+  card: {
+    background: "var(--surface)",
+    border: "2px solid var(--border)",
+    borderRadius: "var(--radius)",
+    boxShadow: "var(--shadow)",
+    padding: "36px 32px",
+    minHeight: 220,
+    display: "flex",
+    flexDirection: "column",
+    gap: 24,
+  },
+  loading: { color: "var(--text-muted)", textAlign: "center", fontSize: 18 },
+  question: { fontSize: 28, fontWeight: 600, textAlign: "center", lineHeight: 1.4, direction: "ltr" },
+  inputRow: { display: "flex", gap: 12, alignItems: "center" },
+  input: {
+    flex: 1,
+    padding: "12px 16px",
+    fontSize: 20,
+    border: "2px solid",
+    borderRadius: 8,
+    background: "var(--bg)",
+    textAlign: "center",
+    direction: "ltr",
+    outline: "none",
+    transition: "border-color 0.15s",
+  },
+  submitBtn: {
+    padding: "12px 20px",
+    background: "var(--primary)",
+    color: "#fff",
+    borderRadius: 8,
+    fontWeight: 700,
+    fontSize: 16,
+  },
+  numpad: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: 10,
+    direction: "ltr",
+  },
+  numkey: {
+    padding: "14px 0",
+    fontSize: 22,
+    fontWeight: 600,
+    background: "var(--bg)",
+    border: "2px solid var(--border)",
+    borderRadius: 10,
+    cursor: "pointer",
+    transition: "background 0.1s",
+  },
+  feedback: { display: "flex", flexDirection: "column", gap: 12, alignItems: "center" },
+  feedbackText: { fontSize: 20, fontWeight: 600 },
+  levelChange: { fontSize: 14, color: "var(--text-muted)" },
+  nextBtn: {
+    padding: "10px 24px",
+    background: "var(--primary)",
+    color: "#fff",
+    borderRadius: 8,
+    fontWeight: 700,
+    fontSize: 16,
+  },
+};

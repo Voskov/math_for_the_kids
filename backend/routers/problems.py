@@ -1,0 +1,148 @@
+from datetime import datetime
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
+from sqlalchemy.orm import Session as DBSession
+from backend.database import get_db
+from backend.models import KidTopicLevel, Session, SessionProblem
+from backend.adaptive import update_level
+from backend import generators
+
+router = APIRouter(prefix="/problems", tags=["problems"])
+
+
+class NextProblemOut(BaseModel):
+    problem_id: int
+    question: str
+    session_problem_number: int
+    total_problems: int
+    difficulty: float
+    done: bool = False
+
+
+class SubmitAnswerIn(BaseModel):
+    problem_id: int
+    kid_answer: str
+    time_taken_s: float
+
+
+class SubmitAnswerOut(BaseModel):
+    is_correct: bool
+    correct_answer: str
+    new_difficulty: float
+    session_done: bool
+    session_id: int
+
+
+def _get_generator(topic: str):
+    if topic == "arithmetic":
+        from backend.generators import arithmetic
+        return arithmetic.generate
+    raise ValueError(f"Unknown topic: {topic}")
+
+
+def _get_or_create_level(db: DBSession, kid_id: int, topic: str) -> KidTopicLevel:
+    level = (
+        db.query(KidTopicLevel)
+        .filter(KidTopicLevel.kid_id == kid_id, KidTopicLevel.topic == topic)
+        .first()
+    )
+    if not level:
+        level = KidTopicLevel(kid_id=kid_id, topic=topic, difficulty_level=5.0, score_accumulator=0.0)
+        db.add(level)
+        db.flush()
+    return level
+
+
+@router.get("/next/{session_id}", response_model=NextProblemOut)
+def next_problem(session_id: int, db: DBSession = Depends(get_db)):
+    session = db.get(Session, session_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    answered_count = (
+        db.query(SessionProblem)
+        .filter(SessionProblem.session_id == session_id, SessionProblem.is_correct.isnot(None))
+        .count()
+    )
+
+    if answered_count >= session.problem_count:
+        # Session complete — close it if not already
+        if not session.ended_at:
+            session.ended_at = datetime.utcnow()
+            db.commit()
+        return NextProblemOut(
+            problem_id=-1,
+            question="",
+            session_problem_number=answered_count,
+            total_problems=session.problem_count,
+            difficulty=0,
+            done=True,
+        )
+
+    level = _get_or_create_level(db, session.kid_id, session.topic)
+    gen = _get_generator(session.topic)
+    problem_data = gen(level.difficulty_level)
+
+    sp = SessionProblem(
+        session_id=session_id,
+        question_text=problem_data["question"],
+        correct_answer=problem_data["answer"],
+        difficulty_at_time=level.difficulty_level,
+        asked_at=datetime.utcnow(),
+    )
+    db.add(sp)
+    db.commit()
+    db.refresh(sp)
+
+    return NextProblemOut(
+        problem_id=sp.id,
+        question=sp.question_text,
+        session_problem_number=answered_count + 1,
+        total_problems=session.problem_count,
+        difficulty=level.difficulty_level,
+    )
+
+
+@router.post("/submit", response_model=SubmitAnswerOut)
+def submit_answer(body: SubmitAnswerIn, db: DBSession = Depends(get_db)):
+    sp = db.get(SessionProblem, body.problem_id)
+    if not sp:
+        raise HTTPException(status_code=404, detail="Problem not found")
+    if sp.is_correct is not None:
+        raise HTTPException(status_code=400, detail="Already answered")
+
+    is_correct = body.kid_answer.strip() == sp.correct_answer.strip()
+    sp.kid_answer = body.kid_answer.strip()
+    sp.is_correct = is_correct
+    sp.time_taken_s = body.time_taken_s
+    sp.answered_at = datetime.utcnow()
+
+    session = db.get(Session, sp.session_id)
+    level = _get_or_create_level(db, session.kid_id, session.topic)
+    new_diff, new_acc = update_level(
+        level.difficulty_level,
+        level.score_accumulator,
+        is_correct,
+        body.time_taken_s,
+    )
+    level.difficulty_level = new_diff
+    level.score_accumulator = new_acc
+
+    answered_count = (
+        db.query(SessionProblem)
+        .filter(SessionProblem.session_id == sp.session_id, SessionProblem.is_correct.isnot(None))
+        .count()
+    )
+    session_done = answered_count >= session.problem_count
+    if session_done and not session.ended_at:
+        session.ended_at = datetime.utcnow()
+
+    db.commit()
+
+    return SubmitAnswerOut(
+        is_correct=is_correct,
+        correct_answer=sp.correct_answer,
+        new_difficulty=new_diff,
+        session_done=session_done,
+        session_id=sp.session_id,
+    )
