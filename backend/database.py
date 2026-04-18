@@ -31,7 +31,7 @@ def _seed_kids():
             Kid(name="אדם", avatar_emoji="👦🏻", starting_grade="1st", id=2),
             Kid(name="בן", avatar_emoji="👶🏼", starting_grade="preschool", id=3),
         ]
-        default_levels = {"2nd": 7.0, "1st": 5.0, "preschool": 3.0}
+        default_levels = {"2nd": 7.0, "1st": 5.0, "preschool": 1.0}
         db.add_all(kids)
         db.flush()
         for kid in kids:
