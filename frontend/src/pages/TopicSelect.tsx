@@ -11,6 +11,8 @@ interface Topic {
 
 const TOPICS: Topic[] = [
   { id: "arithmetic", label: S.topicArithmetic, desc: S.topicArithmeticDesc, emoji: "🔢" },
+  { id: "sequences", label: S.topicSequences, desc: S.topicSequencesDesc, emoji: "📈" },
+  { id: "word_problems", label: S.topicWordProblems, desc: S.topicWordProblemsDesc, emoji: "📖" },
 ];
 
 interface Props {

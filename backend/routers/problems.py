@@ -37,6 +37,12 @@ def _get_generator(topic: str):
     if topic == "arithmetic":
         from backend.generators import arithmetic
         return arithmetic.generate
+    if topic == "sequences":
+        from backend.generators import sequences
+        return sequences.generate
+    if topic == "word_problems":
+        from backend.generators import word_problems
+        return word_problems.generate
     raise ValueError(f"Unknown topic: {topic}")
 
 
