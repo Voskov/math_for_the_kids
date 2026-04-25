@@ -20,8 +20,6 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
     container_name: math_frontend
-    ports:
-      - "80:80"
     networks:
       - internal
       - infra
