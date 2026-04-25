@@ -7,11 +7,11 @@ Scoring per answer:
   correct + slow  (15-45s) → +1
   wrong                    → -2
 
-Promote at +6 accumulated; demote at -4; reset accumulator on level change.
+Promote at +20 accumulated; demote at -12; reset accumulator on level change.
 """
 
-PROMOTE_THRESHOLD = 6.0
-DEMOTE_THRESHOLD = -4.0
+PROMOTE_THRESHOLD = 20.0
+DEMOTE_THRESHOLD = -12.0
 MIN_DIFFICULTY = 1.0
 MAX_DIFFICULTY = 20.0
 
