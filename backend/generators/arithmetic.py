@@ -7,7 +7,7 @@ Difficulty map:
   3–4   two-digit add/subtract
   5–6   multiplication/division (tables up to 10)
   7–8   three-digit add/subtract; two-digit × single-digit
-  9–10  two-step expressions (a op b op c)
+  9–10  two-step expressions; three-digit ÷ single-digit (25%)
   11–12 multi-step with parentheses
   13–14 squares and square roots (perfect)
   15–16 fractions: same denominator
@@ -80,16 +80,17 @@ def _add_sub_three_digit_or_mixed(difficulty: float) -> dict:
         a, b = random.randint(100, 999), random.randint(10, 200)
         big, small = max(a, b), min(a, b)
         return _q(f"{big} − {small}", big - small) if random.random() < 0.5 else _q(f"{a} + {b}", a + b)
-    # two-digit × single-digit
+    # two-digit × single-digit only; 3-digit division is deferred to level 9–10
     a, b = random.randint(11, 99), random.randint(2, 9)
-    if random.random() < 0.5:
-        return _q(f"{a} × {b}", a * b)
-    # division with no remainder
-    product = a * b
-    return _q(f"{product} ÷ {b}", a)
+    return _q(f"{a} × {b}", a * b)
 
 
 def _two_step(difficulty: float) -> dict:
+    # 25% chance: three-digit ÷ single-digit (moved here from level 7–8)
+    if random.random() < 0.25:
+        divisor = random.randint(2, 9)
+        quotient = random.randint(11, 99)
+        return _q(f"{divisor * quotient} ÷ {divisor}", quotient)
     ops = ["+", "−", "×"]
     op1, op2 = random.choices(ops, k=2)
     a = random.randint(2, 15)
