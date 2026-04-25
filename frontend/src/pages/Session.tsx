@@ -68,6 +68,15 @@ export default function Session({ kid, topic: _topic, sessionId, onDone }: Props
     if (phase === "answering") prevDiffRef.current = difficulty;
   }, [phase, difficulty]);
 
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key !== "Enter") return;
+      if (phase === "feedback" && result && !result.session_done) loadNext();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [phase, result]);
+
   return (
     <div style={styles.container}>
       {/* Header */}
@@ -131,13 +140,13 @@ export default function Session({ kid, topic: _topic, sessionId, onDone }: Props
             {phase === "answering" && (
               <div style={styles.numpad}>
                 {["7","8","9","4","5","6","1","2","3"].map((k) => (
-                  <button key={k} style={styles.numkey} onClick={() => setAnswer((a) => a + k)}>
+                  <button key={k} style={styles.numkey} onClick={() => { setAnswer((a) => a + k); inputRef.current?.focus(); }}>
                     {k}
                   </button>
                 ))}
-                <button style={styles.numkey} onClick={() => setAnswer((a) => a.slice(0, -1))}>⌫</button>
-                <button style={styles.numkey} onClick={() => setAnswer((a) => a + "0")}>0</button>
-                <button style={styles.numkey} onClick={() => setAnswer((a) => a + "/")}>／</button>
+                <button style={styles.numkey} onClick={() => { setAnswer((a) => a.slice(0, -1)); inputRef.current?.focus(); }}>⌫</button>
+                <button style={styles.numkey} onClick={() => { setAnswer((a) => a + "0"); inputRef.current?.focus(); }}>0</button>
+                <button style={styles.numkey} onClick={() => { setAnswer((a) => a + "/"); inputRef.current?.focus(); }}>／</button>
               </div>
             )}
 
@@ -215,7 +224,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   loading: { color: "var(--text-muted)", textAlign: "center", fontSize: 18 },
   question: { fontSize: 28, fontWeight: 600, textAlign: "center", lineHeight: 1.4, direction: "ltr" },
-  inputRow: { display: "flex", gap: 12, alignItems: "center" },
+  inputRow: { display: "flex", gap: 12, alignItems: "center", direction: "ltr" },
   input: {
     flex: 1,
     padding: "12px 16px",
