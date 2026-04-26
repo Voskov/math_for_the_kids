@@ -55,6 +55,20 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
     }
   }
 
+  async function handleChoice(choice: string) {
+    if (!problem) return;
+    setAnswer(choice);
+    const timeTaken = (Date.now() - startTimeRef.current) / 1000;
+    const r = await api.submitAnswer(problem.problem_id, choice, timeTaken);
+    setResult(r);
+    setDifficulty(r.new_difficulty);
+    setPhase("feedback");
+    if (r.session_done) {
+      const duration = Math.round((Date.now() - sessionStartRef.current) / 1000);
+      setTimeout(() => onDone(duration), 1400);
+    }
+  }
+
   function handleKeyDown(e: React.KeyboardEvent) {
     if (e.key === "Enter") handleSubmit();
   }
@@ -114,44 +128,70 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
           <>
             <p style={styles.question}>{problem.question}</p>
 
-            <div style={styles.inputRow}>
-              <input
-                ref={inputRef}
-                style={{
-                  ...styles.input,
-                  borderColor:
-                    phase === "feedback"
-                      ? result?.is_correct
-                        ? "var(--success)"
-                        : "var(--error)"
-                      : "var(--border)",
-                }}
-                type="text"
-                inputMode="decimal"
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                onKeyDown={handleKeyDown}
-                disabled={phase === "feedback"}
-                placeholder={S.answer}
-              />
-              {phase === "answering" && (
-                <button style={styles.submitBtn} onClick={handleSubmit} disabled={!answer.trim()}>
-                  {S.submit}
-                </button>
-              )}
-            </div>
-
-            {phase === "answering" && (
-              <div style={styles.numpad}>
-                {["7","8","9","4","5","6","1","2","3"].map((k) => (
-                  <button key={k} style={styles.numkey} onClick={() => { setAnswer((a) => a + k); inputRef.current?.focus(); }}>
-                    {k}
-                  </button>
-                ))}
-                <button style={styles.numkey} onClick={() => { setAnswer((a) => a.slice(0, -1)); inputRef.current?.focus(); }}>⌫</button>
-                <button style={styles.numkey} onClick={() => { setAnswer((a) => a + "0"); inputRef.current?.focus(); }}>0</button>
-                <button style={styles.numkey} onClick={() => { setAnswer((a) => a + "/"); inputRef.current?.focus(); }}>／</button>
+            {problem.choices ? (
+              <div style={styles.choices}>
+                {problem.choices.map((c) => {
+                  let bg = "var(--bg)";
+                  let color: string | undefined = undefined;
+                  if (phase === "feedback" && result) {
+                    if (c === answer && result.is_correct) { bg = "var(--success)"; color = "#fff"; }
+                    else if (c === answer && !result.is_correct) { bg = "var(--error)"; color = "#fff"; }
+                    else if (c === result.correct_answer && !result.is_correct) { bg = "var(--success)"; color = "#fff"; }
+                  }
+                  return (
+                    <button
+                      key={c}
+                      style={{ ...styles.choiceBtn, background: bg, color }}
+                      onClick={() => phase === "answering" && handleChoice(c)}
+                      disabled={phase === "feedback"}
+                    >
+                      {c}
+                    </button>
+                  );
+                })}
               </div>
+            ) : (
+              <>
+                <div style={styles.inputRow}>
+                  <input
+                    ref={inputRef}
+                    style={{
+                      ...styles.input,
+                      borderColor:
+                        phase === "feedback"
+                          ? result?.is_correct
+                            ? "var(--success)"
+                            : "var(--error)"
+                          : "var(--border)",
+                    }}
+                    type="text"
+                    inputMode="decimal"
+                    value={answer}
+                    onChange={(e) => setAnswer(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    disabled={phase === "feedback"}
+                    placeholder={S.answer}
+                  />
+                  {phase === "answering" && (
+                    <button style={styles.submitBtn} onClick={handleSubmit} disabled={!answer.trim()}>
+                      {S.submit}
+                    </button>
+                  )}
+                </div>
+
+                {phase === "answering" && (
+                  <div style={styles.numpad}>
+                    {["7","8","9","4","5","6","1","2","3"].map((k) => (
+                      <button key={k} style={styles.numkey} onClick={() => { setAnswer((a) => a + k); inputRef.current?.focus(); }}>
+                        {k}
+                      </button>
+                    ))}
+                    <button style={styles.numkey} onClick={() => { setAnswer((a) => a.slice(0, -1)); inputRef.current?.focus(); }}>⌫</button>
+                    <button style={styles.numkey} onClick={() => { setAnswer((a) => a + "0"); inputRef.current?.focus(); }}>0</button>
+                    <button style={styles.numkey} onClick={() => { setAnswer((a) => a + "/"); inputRef.current?.focus(); }}>／</button>
+                  </div>
+                )}
+              </>
             )}
 
             {phase === "feedback" && result && (
@@ -263,6 +303,23 @@ const styles: Record<string, React.CSSProperties> = {
     gridTemplateColumns: "repeat(3, 1fr)",
     gap: 10,
     direction: "ltr",
+  },
+  choices: {
+    display: "flex",
+    gap: 12,
+    justifyContent: "center",
+    direction: "ltr",
+  },
+  choiceBtn: {
+    flex: 1,
+    padding: "18px 8px",
+    fontSize: 22,
+    fontWeight: 700,
+    background: "var(--bg)",
+    border: "2px solid var(--border)",
+    borderRadius: 10,
+    cursor: "pointer",
+    transition: "background 0.15s",
   },
   numkey: {
     padding: "14px 0",

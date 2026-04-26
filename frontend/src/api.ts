@@ -40,6 +40,7 @@ export interface NextProblem {
   total_problems: number;
   difficulty: number;
   done: boolean;
+  choices?: string[];
 }
 
 export interface SubmitResult {

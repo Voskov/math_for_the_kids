@@ -18,6 +18,7 @@ class NextProblemOut(BaseModel):
     total_problems: int
     difficulty: float
     done: bool = False
+    choices: list[str] | None = None
 
 
 class SubmitAnswerIn(BaseModel):
@@ -119,6 +120,7 @@ def next_problem(session_id: int, db: DBSession = Depends(get_db)):
         session_problem_number=answered_count + 1,
         total_problems=session.problem_count,
         difficulty=level.difficulty_level,
+        choices=problem_data.get("choices"),
     )
 
 

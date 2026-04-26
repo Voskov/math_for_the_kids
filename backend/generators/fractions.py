@@ -76,7 +76,11 @@ def _compare_fractions(difficulty: float) -> dict:
     if f1 == f2:
         return _compare_fractions(difficulty)
     bigger = f"{n1}/{d1}" if f1 > f2 else f"{n2}/{d2}"
-    return {"question": f"מה גדול יותר: {n1}/{d1} או {n2}/{d2}?", "answer": bigger}
+    return {
+        "question": f"מה גדול יותר: {n1}/{d1} או {n2}/{d2}?",
+        "answer": bigger,
+        "choices": [f"{n1}/{d1}", "=", f"{n2}/{d2}"],
+    }
 
 
 def _equivalent_fractions(difficulty: float) -> dict:
