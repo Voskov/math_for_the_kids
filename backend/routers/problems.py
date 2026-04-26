@@ -1,4 +1,5 @@
 from datetime import datetime
+from fractions import Fraction
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session as DBSession
@@ -43,7 +44,19 @@ def _get_generator(topic: str):
     if topic == "word_problems":
         from backend.generators import word_problems
         return word_problems.generate
+    if topic == "fractions":
+        from backend.generators import fractions
+        return fractions.generate
     raise ValueError(f"Unknown topic: {topic}")
+
+
+def _answers_match(kid: str, correct: str) -> bool:
+    if kid == correct:
+        return True
+    try:
+        return Fraction(kid) == Fraction(correct)
+    except (ValueError, ZeroDivisionError):
+        return False
 
 
 def _get_or_create_level(db: DBSession, kid_id: int, topic: str) -> KidTopicLevel:
@@ -117,8 +130,9 @@ def submit_answer(body: SubmitAnswerIn, db: DBSession = Depends(get_db)):
     if sp.is_correct is not None:
         raise HTTPException(status_code=400, detail="Already answered")
 
-    is_correct = body.kid_answer.strip() == sp.correct_answer.strip()
-    sp.kid_answer = body.kid_answer.strip()
+    kid_answer = body.kid_answer.strip()
+    is_correct = _answers_match(kid_answer, sp.correct_answer)
+    sp.kid_answer = kid_answer
     sp.is_correct = is_correct
     sp.time_taken_s = body.time_taken_s
     sp.answered_at = datetime.utcnow()
