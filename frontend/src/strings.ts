@@ -8,6 +8,8 @@ export const S = {
   topicSequencesDesc: "מצא את המספר החסר בסדרה",
   topicWordProblems: "בעיות מילוליות",
   topicWordProblemsDesc: "שאלות בסיפור — קרא וחשב",
+  topicFractions: "שברים",
+  topicFractionsDesc: "הכר, השווה, חבר, כפול ועוד",
   startSession: "התחל!",
   back: "חזור",
   level: "רמה",
@@ -27,4 +29,10 @@ export const S = {
   levelUp: "⬆️ עלית רמה!",
   levelDown: "⬇️ ירדת רמה",
   levelSame: "",
+  duration: "זמן",
+  formatDuration: (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return m > 0 ? `${m}:${String(s).padStart(2, "0")}` : `${s}″`;
+  },
 };

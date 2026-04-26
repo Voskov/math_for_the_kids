@@ -4,11 +4,12 @@ import { S } from "../strings";
 
 interface Props {
   sessionId: number;
+  durationSeconds: number;
   onPlayAgain: () => void;
   onHome: () => void;
 }
 
-export default function Summary({ sessionId, onPlayAgain, onHome }: Props) {
+export default function Summary({ sessionId, durationSeconds, onPlayAgain, onHome }: Props) {
   const [summary, setSummary] = useState<SessionSummary | null>(null);
 
   useEffect(() => {
@@ -34,6 +35,10 @@ export default function Summary({ sessionId, onPlayAgain, onHome }: Props) {
         <div style={styles.stat}>
           <span style={styles.statNum}>{summary.accuracy_pct}%</span>
           <span style={styles.statLabel}>דיוק</span>
+        </div>
+        <div style={styles.stat}>
+          <span style={styles.statNum}>{S.formatDuration(durationSeconds)}</span>
+          <span style={styles.statLabel}>{S.duration}</span>
         </div>
       </div>
 

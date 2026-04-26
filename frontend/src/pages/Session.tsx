@@ -6,7 +6,7 @@ interface Props {
   kid: Kid;
   topic: string;
   sessionId: number;
-  onDone: () => void;
+  onDone: (durationSeconds: number) => void;
   onBack: () => void;
 }
 
@@ -19,6 +19,7 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
   const [result, setResult] = useState<SubmitResult | null>(null);
   const [difficulty, setDifficulty] = useState(0);
   const startTimeRef = useRef<number>(Date.now());
+  const sessionStartRef = useRef<number>(Date.now());
   const inputRef = useRef<HTMLInputElement>(null);
 
   async function loadNext() {
@@ -49,7 +50,8 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
     setDifficulty(r.new_difficulty);
     setPhase("feedback");
     if (r.session_done) {
-      setTimeout(onDone, 1400);
+      const duration = Math.round((Date.now() - sessionStartRef.current) / 1000);
+      setTimeout(() => onDone(duration), 1400);
     }
   }
 
