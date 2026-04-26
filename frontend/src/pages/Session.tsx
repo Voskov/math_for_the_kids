@@ -7,11 +7,12 @@ interface Props {
   topic: string;
   sessionId: number;
   onDone: () => void;
+  onBack: () => void;
 }
 
 type Phase = "loading" | "answering" | "feedback" | "done";
 
-export default function Session({ kid, topic: _topic, sessionId, onDone }: Props) {
+export default function Session({ kid, topic: _topic, sessionId, onDone, onBack }: Props) {
   const [phase, setPhase] = useState<Phase>("loading");
   const [problem, setProblem] = useState<NextProblem | null>(null);
   const [answer, setAnswer] = useState("");
@@ -81,6 +82,7 @@ export default function Session({ kid, topic: _topic, sessionId, onDone }: Props
     <div style={styles.container}>
       {/* Header */}
       <div style={styles.header}>
+        <button style={styles.backBtn} onClick={onBack}>{S.back} ←</button>
         <span style={styles.kidBadge}>{kid.avatar_emoji} {kid.name}</span>
         <span style={styles.levelBadge}>{S.level}: {Math.floor(difficulty)}</span>
       </div>
@@ -187,6 +189,14 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     marginBottom: 20,
   },
+  backBtn: {
+    background: "none",
+    border: "none",
+    color: "var(--text-muted)",
+    fontSize: 14,
+    cursor: "pointer",
+    padding: "4px 0",
+  },
   kidBadge: { fontSize: 18, fontWeight: 600 },
   levelBadge: {
     fontSize: 14,
@@ -227,6 +237,7 @@ const styles: Record<string, React.CSSProperties> = {
   inputRow: { display: "flex", gap: 12, alignItems: "center", direction: "ltr" },
   input: {
     flex: 1,
+    minWidth: 0,
     padding: "12px 16px",
     fontSize: 20,
     border: "2px solid",

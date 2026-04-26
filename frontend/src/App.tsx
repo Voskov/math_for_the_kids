@@ -36,6 +36,7 @@ export default function App() {
           topic={page.topic}
           sessionId={page.sessionId}
           onDone={() => setPage({ name: "summary", sessionId: page.sessionId, kid: page.kid })}
+          onBack={() => setPage({ name: "topicSelect", kid: page.kid })}
         />
       )}
       {page.name === "summary" && (
