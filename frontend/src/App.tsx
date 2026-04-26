@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import KidSelect from "./pages/KidSelect";
 import TopicSelect from "./pages/TopicSelect";
 import Session from "./pages/Session";
@@ -9,25 +9,39 @@ export type Page =
   | { name: "kidSelect" }
   | { name: "topicSelect"; kid: Kid }
   | { name: "session"; kid: Kid; topic: string; sessionId: number }
-  | { name: "summary"; sessionId: number; kid: Kid };
+  | { name: "summary"; sessionId: number; kid: Kid; durationSeconds: number };
 
 export default function App() {
   const [page, setPage] = useState<Page>({ name: "kidSelect" });
+
+  function navigate(next: Page) {
+    history.pushState(next, "");
+    setPage(next);
+  }
+
+  useEffect(() => {
+    history.replaceState({ name: "kidSelect" }, "");
+    function onPop(e: PopStateEvent) {
+      if (e.state) setPage(e.state as Page);
+    }
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px" }}>
       {page.name === "kidSelect" && (
         <KidSelect
-          onSelect={(kid) => setPage({ name: "topicSelect", kid })}
+          onSelect={(kid) => navigate({ name: "topicSelect", kid })}
         />
       )}
       {page.name === "topicSelect" && (
         <TopicSelect
           kid={page.kid}
           onStart={(topic, sessionId) =>
-            setPage({ name: "session", kid: page.kid, topic, sessionId })
+            navigate({ name: "session", kid: page.kid, topic, sessionId })
           }
-          onBack={() => setPage({ name: "kidSelect" })}
+          onBack={() => navigate({ name: "kidSelect" })}
         />
       )}
       {page.name === "session" && (
@@ -35,15 +49,16 @@ export default function App() {
           kid={page.kid}
           topic={page.topic}
           sessionId={page.sessionId}
-          onDone={() => setPage({ name: "summary", sessionId: page.sessionId, kid: page.kid })}
-          onBack={() => setPage({ name: "topicSelect", kid: page.kid })}
+          onDone={(duration) => navigate({ name: "summary", sessionId: page.sessionId, kid: page.kid, durationSeconds: duration })}
+          onBack={() => navigate({ name: "topicSelect", kid: page.kid })}
         />
       )}
       {page.name === "summary" && (
         <Summary
           sessionId={page.sessionId}
-          onPlayAgain={() => setPage({ name: "topicSelect", kid: page.kid })}
-          onHome={() => setPage({ name: "kidSelect" })}
+          durationSeconds={page.durationSeconds}
+          onPlayAgain={() => navigate({ name: "topicSelect", kid: page.kid })}
+          onHome={() => navigate({ name: "kidSelect" })}
         />
       )}
     </div>
