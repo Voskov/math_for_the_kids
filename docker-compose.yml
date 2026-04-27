@@ -10,7 +10,7 @@ services:
       dockerfile: Dockerfile
     container_name: math_backend
     volumes:
-      - ./data:/app/data
+      - D:/Coding/math_tutor_data:/app/data
     networks:
       - internal
     restart: unless-stopped
