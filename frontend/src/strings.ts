@@ -10,6 +10,8 @@ export const S = {
   topicWordProblemsDesc: "שאלות בסיפור — קרא וחשב",
   topicFractions: "שברים",
   topicFractionsDesc: "הכר, השווה, חבר, כפול ועוד",
+  topicHebrewLetters: "אותיות",
+  topicHebrewLettersDesc: "הכר אותיות עברית",
   startSession: "התחל!",
   back: "חזור",
   level: "רמה",

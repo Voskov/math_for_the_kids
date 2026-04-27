@@ -19,6 +19,7 @@ class NextProblemOut(BaseModel):
     difficulty: float
     done: bool = False
     choices: list[str] | None = None
+    tts_word: str | None = None
 
 
 class SubmitAnswerIn(BaseModel):
@@ -48,6 +49,9 @@ def _get_generator(topic: str):
     if topic == "fractions":
         from backend.generators import fractions
         return fractions.generate
+    if topic == "hebrew_letters":
+        from backend.generators import hebrew_letters
+        return hebrew_letters.generate
     raise ValueError(f"Unknown topic: {topic}")
 
 
@@ -60,6 +64,11 @@ def _answers_match(kid: str, correct: str) -> bool:
         return False
 
 
+_TOPIC_START_DIFFICULTY: dict[str, float] = {
+    "hebrew_letters": 1.0,
+}
+
+
 def _get_or_create_level(db: DBSession, kid_id: int, topic: str) -> KidTopicLevel:
     level = (
         db.query(KidTopicLevel)
@@ -67,7 +76,8 @@ def _get_or_create_level(db: DBSession, kid_id: int, topic: str) -> KidTopicLeve
         .first()
     )
     if not level:
-        level = KidTopicLevel(kid_id=kid_id, topic=topic, difficulty_level=5.0, score_accumulator=0.0)
+        default = _TOPIC_START_DIFFICULTY.get(topic, 5.0)
+        level = KidTopicLevel(kid_id=kid_id, topic=topic, difficulty_level=default, score_accumulator=0.0)
         db.add(level)
         db.flush()
     return level
@@ -107,6 +117,7 @@ def next_problem(session_id: int, db: DBSession = Depends(get_db)):
         session_id=session_id,
         question_text=problem_data["question"],
         correct_answer=problem_data["answer"],
+        tts_word=problem_data.get("tts_word"),
         difficulty_at_time=level.difficulty_level,
         asked_at=datetime.utcnow(),
     )
@@ -121,6 +132,7 @@ def next_problem(session_id: int, db: DBSession = Depends(get_db)):
         total_problems=session.problem_count,
         difficulty=level.difficulty_level,
         choices=problem_data.get("choices"),
+        tts_word=sp.tts_word,
     )
 
 

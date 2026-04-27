@@ -73,6 +73,13 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
     if (e.key === "Enter") handleSubmit();
   }
 
+  function speak(word: string) {
+    const utt = new SpeechSynthesisUtterance(word);
+    utt.lang = "he-IL";
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utt);
+  }
+
   const prevDiffRef = useRef(difficulty);
   const levelChange =
     result && difficulty !== prevDiffRef.current
@@ -126,7 +133,14 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
 
         {(phase === "answering" || phase === "feedback") && problem && (
           <>
-            <p style={styles.question}>{problem.question}</p>
+            {problem.tts_word ? (
+              <button style={styles.ttsQuestion} onClick={() => speak(problem.tts_word!)}>
+                <span style={styles.ttsDisplay}>{problem.question}</span>
+                <span style={styles.ttsSpeakHint}>🔊</span>
+              </button>
+            ) : (
+              <p style={styles.question}>{problem.question}</p>
+            )}
 
             {problem.choices ? (
               <div style={styles.choices}>
@@ -141,7 +155,7 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
                   return (
                     <button
                       key={c}
-                      style={{ ...styles.choiceBtn, background: bg, color }}
+                      style={{ ...styles.choiceBtn, ...(problem.tts_word ? styles.choiceBtnLarge : {}), background: bg, color }}
                       onClick={() => phase === "answering" && handleChoice(c)}
                       disabled={phase === "feedback"}
                     >
@@ -276,6 +290,19 @@ const styles: Record<string, React.CSSProperties> = {
   },
   loading: { color: "var(--text-muted)", textAlign: "center", fontSize: 18 },
   question: { fontSize: 28, fontWeight: 600, textAlign: "center", lineHeight: 1.4, direction: "ltr" },
+  ttsQuestion: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: 8,
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    padding: "8px 0",
+  },
+  ttsDisplay: { fontSize: 80, lineHeight: 1.1 },
+  ttsSpeakHint: { fontSize: 20, opacity: 0.5 },
+  choiceBtnLarge: { fontSize: 36, padding: "20px 8px" },
   inputRow: { display: "flex", gap: 12, alignItems: "center", direction: "ltr" },
   input: {
     flex: 1,

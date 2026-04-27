@@ -53,6 +53,7 @@ class SessionProblem(Base):
     is_correct: Mapped[bool | None] = mapped_column(Boolean, nullable=True)
     time_taken_s: Mapped[float | None] = mapped_column(Float, nullable=True)
     difficulty_at_time: Mapped[float] = mapped_column(Float, nullable=False)
+    tts_word: Mapped[str | None] = mapped_column(String, nullable=True)
     asked_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     answered_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
 

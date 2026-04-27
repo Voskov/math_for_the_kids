@@ -7,6 +7,7 @@ interface Topic {
   label: string;
   desc: string;
   emoji: string;
+  forGrades?: string[];
 }
 
 const TOPICS: Topic[] = [
@@ -14,6 +15,7 @@ const TOPICS: Topic[] = [
   { id: "sequences", label: S.topicSequences, desc: S.topicSequencesDesc, emoji: "📈" },
   { id: "word_problems", label: S.topicWordProblems, desc: S.topicWordProblemsDesc, emoji: "📖" },
   { id: "fractions", label: S.topicFractions, desc: S.topicFractionsDesc, emoji: "½" },
+  { id: "hebrew_letters", label: S.topicHebrewLetters, desc: S.topicHebrewLettersDesc, emoji: "🔤", forGrades: ["preschool"] },
 ];
 
 interface Props {
@@ -49,7 +51,7 @@ export default function TopicSelect({ kid, onStart, onBack }: Props) {
       <h2 style={styles.title}>{S.chooseTopicTitle}</h2>
 
       <div style={styles.grid}>
-        {TOPICS.map((t) => (
+        {TOPICS.filter((t) => !t.forGrades || t.forGrades.includes(kid.starting_grade)).map((t) => (
           <button
             key={t.id}
             style={styles.card}

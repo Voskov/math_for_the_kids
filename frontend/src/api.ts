@@ -41,6 +41,7 @@ export interface NextProblem {
   difficulty: number;
   done: boolean;
   choices?: string[];
+  tts_word?: string;
 }
 
 export interface SubmitResult {
