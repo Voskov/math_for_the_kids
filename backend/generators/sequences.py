@@ -45,7 +45,7 @@ def generate(difficulty: float) -> dict:
 
 def _make_q(terms: list, gap_idx: int) -> dict:
     answer = terms[gap_idx]
-    parts = ["?" if i == gap_idx else str(t) for i, t in enumerate(terms)]
+    parts = ["_" if i == gap_idx else str(t) for i, t in enumerate(terms)]
     return {"question": ", ".join(parts), "answer": str(answer)}
 
 
