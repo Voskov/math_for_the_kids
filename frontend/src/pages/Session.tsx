@@ -163,7 +163,7 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
                 <span style={styles.ttsSpeakHint}>🔊</span>
               </button>
             ) : (
-              <p style={styles.question}><MathText text={problem.question} /></p>
+              <p style={styles.question} dir={/[֐-׿]/.test(problem.question) ? "rtl" : "ltr"}><MathText text={problem.question} /></p>
             )}
 
             {problem.choices ? (
@@ -313,7 +313,7 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 24,
   },
   loading: { color: "var(--text-muted)", textAlign: "center", fontSize: 18 },
-  question: { fontSize: 28, fontWeight: 600, textAlign: "center", lineHeight: 1.4, direction: "ltr" },
+  question: { fontSize: 28, fontWeight: 600, textAlign: "center", lineHeight: 1.4 },
   ttsQuestion: {
     display: "flex",
     flexDirection: "column",
