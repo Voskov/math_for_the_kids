@@ -37,4 +37,23 @@ export const S = {
     const s = seconds % 60;
     return m > 0 ? `${m}:${String(s).padStart(2, "0")}` : `${s}″`;
   },
+
+  adminTitle: "לוח בקרה",
+  adminTabOverview: "סקירה",
+  adminTabKid: "ילד ונושא",
+  adminTabActivity: "פעילות אחרונה",
+  adminColKid: "ילד",
+  adminColTopic: "נושא",
+  adminColLevel: "רמה",
+  adminColSessions: "מפגשים",
+  adminColAccuracy: "דיוק",
+  adminColAnswered: "תשובות",
+  adminColDate: "תאריך",
+  adminColDuration: "זמן",
+  adminPickKid: "בחר ילד",
+  adminPickTopic: "בחר נושא",
+  adminLevelOverTime: "רמת קושי לאורך זמן",
+  adminNoData: "אין עדיין נתונים",
+  adminCorrect: "נכון",
+  adminWrong: "שגוי",
 };

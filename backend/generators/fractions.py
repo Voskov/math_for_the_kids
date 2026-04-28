@@ -87,7 +87,7 @@ def _equivalent_fractions(difficulty: float) -> dict:
     d1 = random.choice([2, 3, 4, 5])
     n1 = random.randint(1, d1 - 1)
     mult = random.randint(2, 4 if difficulty < 7.5 else 5)
-    return _q(f"{n1}/{d1} = ?/{d1 * mult}", n1 * mult)
+    return {"question": f"{n1}/{d1} = ?/{d1 * mult}", "answer": str(n1 * mult)}
 
 
 def _add_same_denom(difficulty: float) -> dict:

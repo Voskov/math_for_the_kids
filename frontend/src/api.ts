@@ -71,6 +71,42 @@ export interface SessionSummary {
   problems: SummaryProblem[];
 }
 
+export interface OverviewKid {
+  kid_id: number;
+  name: string;
+  avatar_emoji: string;
+  starting_grade: string;
+  levels: { topic: string; difficulty_level: number }[];
+  total_sessions: number;
+  total_problems_answered: number;
+  overall_accuracy_pct: number;
+}
+
+export interface SessionRow {
+  session_id: number;
+  topic: string;
+  started_at: string;
+  ended_at: string | null;
+  duration_s: number | null;
+  total: number;
+  correct: number;
+  accuracy_pct: number;
+}
+
+export interface ActivityRow extends SessionRow {
+  kid_id: number;
+  kid_name: string;
+  avatar_emoji: string;
+}
+
+export interface HistoryPoint {
+  asked_at: string;
+  difficulty_at_time: number;
+  is_correct: boolean;
+  time_taken_s: number | null;
+  session_id: number;
+}
+
 export const api = {
   getKids: () => req<Kid[]>("/kids/"),
   getKid: (id: number) => req<Kid>(`/kids/${id}`),
@@ -92,4 +128,11 @@ export const api = {
 
   getSummary: (session_id: number) =>
     req<SessionSummary>(`/sessions/${session_id}/summary`),
+
+  getAdminOverview: () => req<OverviewKid[]>("/admin/overview"),
+  getKidSessions: (kid_id: number) =>
+    req<SessionRow[]>(`/admin/kids/${kid_id}/sessions`),
+  getKidTopicHistory: (kid_id: number, topic: string) =>
+    req<HistoryPoint[]>(`/admin/kids/${kid_id}/topics/${topic}/history`),
+  getRecentActivity: () => req<ActivityRow[]>("/admin/activity"),
 };

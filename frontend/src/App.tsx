@@ -3,13 +3,15 @@ import KidSelect from "./pages/KidSelect";
 import TopicSelect from "./pages/TopicSelect";
 import Session from "./pages/Session";
 import Summary from "./pages/Summary";
+import Admin from "./pages/Admin";
 import type { Kid } from "./api";
 
 export type Page =
   | { name: "kidSelect" }
   | { name: "topicSelect"; kid: Kid }
   | { name: "session"; kid: Kid; topic: string; sessionId: number }
-  | { name: "summary"; sessionId: number; kid: Kid; durationSeconds: number };
+  | { name: "summary"; sessionId: number; kid: Kid; durationSeconds: number }
+  | { name: "admin" };
 
 export default function App() {
   const [page, setPage] = useState<Page>({ name: "kidSelect" });
@@ -33,7 +35,11 @@ export default function App() {
       {page.name === "kidSelect" && (
         <KidSelect
           onSelect={(kid) => navigate({ name: "topicSelect", kid })}
+          onAdmin={() => navigate({ name: "admin" })}
         />
+      )}
+      {page.name === "admin" && (
+        <Admin onBack={() => navigate({ name: "kidSelect" })} />
       )}
       {page.name === "topicSelect" && (
         <TopicSelect

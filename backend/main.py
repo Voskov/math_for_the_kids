@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.database import init_db
-from backend.routers import kids, sessions, problems
+from backend.routers import admin, kids, sessions, problems
 
 app = FastAPI(title="מתמטיקה לילדים", version="0.1.0")
 
@@ -15,6 +15,7 @@ app.add_middleware(
 app.include_router(kids.router)
 app.include_router(sessions.router)
 app.include_router(problems.router)
+app.include_router(admin.router)
 
 
 @app.on_event("startup")

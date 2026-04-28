@@ -2,6 +2,30 @@ import { useEffect, useRef, useState } from "react";
 import { api, type Kid, type NextProblem, type SubmitResult } from "../api";
 import { S } from "../strings";
 
+function Frac({ num, den }: { num: string; den: string }) {
+  return (
+    <span style={{ display: "inline-flex", flexDirection: "column", verticalAlign: "middle", textAlign: "center", lineHeight: 1.1, margin: "0 4px" }}>
+      <span style={{ padding: "0 6px" }}>{num}</span>
+      <span style={{ padding: "0 6px", borderTop: "0.08em solid currentColor" }}>{den}</span>
+    </span>
+  );
+}
+
+function MathText({ text }: { text: string }) {
+  const parts: React.ReactNode[] = [];
+  const re = /(\d+|\?)\/(\d+|\?)/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  let i = 0;
+  while ((m = re.exec(text))) {
+    if (m.index > last) parts.push(text.slice(last, m.index));
+    parts.push(<Frac key={i++} num={m[1]} den={m[2]} />);
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return <>{parts}</>;
+}
+
 interface Props {
   kid: Kid;
   topic: string;
@@ -139,7 +163,7 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
                 <span style={styles.ttsSpeakHint}>🔊</span>
               </button>
             ) : (
-              <p style={styles.question}>{problem.question}</p>
+              <p style={styles.question}><MathText text={problem.question} /></p>
             )}
 
             {problem.choices ? (
@@ -159,7 +183,7 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
                       onClick={() => phase === "answering" && handleChoice(c)}
                       disabled={phase === "feedback"}
                     >
-                      {c}
+                      <MathText text={c} />
                     </button>
                   );
                 })}
@@ -216,7 +240,7 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
                     color: result.is_correct ? "var(--success)" : "var(--error)",
                   }}
                 >
-                  {result.is_correct ? S.correct : S.wrong(result.correct_answer)}
+                  {result.is_correct ? S.correct : <MathText text={S.wrong(result.correct_answer)} />}
                 </p>
                 {levelChange && <p style={styles.levelChange}>{levelChange}</p>}
                 {!result.session_done && (
