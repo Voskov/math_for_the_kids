@@ -1,6 +1,47 @@
 import { useEffect, useRef, useState } from "react";
 import { api, type Kid, type NextProblem, type SubmitResult } from "../api";
 import { S } from "../strings";
+import Clock, { parseTime } from "../components/Clock";
+
+type ClockSpec =
+  | { mode: "readH" | "readM" | "read"; t: { hour: number; minute: number } }
+  | { mode: "pick"; t: { hour: number; minute: number } }
+  | { mode: "add"; t: { hour: number; minute: number }; delta: string }
+  | { mode: "elapsed"; t1: { hour: number; minute: number }; t2: { hour: number; minute: number } };
+
+function parseClockSpec(question: string): ClockSpec | null {
+  if (!question.startsWith("clock-")) return null;
+  const parts = question.split("|");
+  const head = parts[0];
+  if (head === "clock-readH") return { mode: "readH", t: parseTime(parts[1]) };
+  if (head === "clock-readM") return { mode: "readM", t: parseTime(parts[1]) };
+  if (head === "clock-read") return { mode: "read", t: parseTime(parts[1]) };
+  if (head === "clock-pick") return { mode: "pick", t: parseTime(parts[1]) };
+  if (head === "clock-add") return { mode: "add", t: parseTime(parts[1]), delta: parts[2] };
+  if (head === "clock-elapsed") return { mode: "elapsed", t1: parseTime(parts[1]), t2: parseTime(parts[2]) };
+  return null;
+}
+
+function deltaText(delta: string): string {
+  const clean = delta.replace("+", "");
+  const [hStr, mStr] = clean.split(":");
+  const h = parseInt(hStr, 10);
+  const m = parseInt(mStr, 10);
+  if (h && m) return `${S.clockHours(h)} ו-${S.clockMinutes(m)}`;
+  if (h) return S.clockHours(h);
+  return S.clockMinutes(m);
+}
+
+function clockPrompt(spec: ClockSpec): string {
+  switch (spec.mode) {
+    case "readH": return S.clockReadHour;
+    case "readM": return S.clockReadMinute;
+    case "read": return S.clockReadFull;
+    case "pick": return S.clockPick;
+    case "add": return S.clockAdd(deltaText(spec.delta));
+    case "elapsed": return S.clockElapsed;
+  }
+}
 
 function Frac({ num, den }: { num: string; den: string }) {
   return (
@@ -104,6 +145,8 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
     window.speechSynthesis.speak(utt);
   }
 
+  const clockSpec = problem ? parseClockSpec(problem.question) : null;
+
   const prevDiffRef = useRef(difficulty);
   const levelChange =
     result && difficulty !== prevDiffRef.current
@@ -157,7 +200,24 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
 
         {(phase === "answering" || phase === "feedback") && problem && (
           <>
-            {problem.tts_word ? (
+            {clockSpec ? (
+              <div style={styles.clockQuestion}>
+                <p style={styles.clockPrompt} dir="rtl">{clockPrompt(clockSpec)}</p>
+                {clockSpec.mode === "pick" ? (
+                  <p style={styles.digitalTime}>{`${clockSpec.t.hour}:${clockSpec.t.minute.toString().padStart(2, "0")}`}</p>
+                ) : clockSpec.mode === "elapsed" ? (
+                  <div style={styles.twoClocks}>
+                    <Clock hour={clockSpec.t1.hour} minute={clockSpec.t1.minute} size={140} />
+                    <span style={styles.clockArrow}>←</span>
+                    <Clock hour={clockSpec.t2.hour} minute={clockSpec.t2.minute} size={140} />
+                  </div>
+                ) : clockSpec.mode === "add" ? (
+                  <Clock hour={clockSpec.t.hour} minute={clockSpec.t.minute} size={180} />
+                ) : (
+                  <Clock hour={clockSpec.t.hour} minute={clockSpec.t.minute} size={200} />
+                )}
+              </div>
+            ) : problem.tts_word ? (
               <button style={styles.ttsQuestion} onClick={() => speak(problem.tts_word!)}>
                 <span style={styles.ttsDisplay}>{problem.question}</span>
                 <span style={styles.ttsSpeakHint}>🔊</span>
@@ -167,6 +227,30 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
             )}
 
             {problem.choices ? (
+              clockSpec?.mode === "pick" ? (
+                <div style={styles.clockChoices}>
+                  {problem.choices.map((c) => {
+                    const t = parseTime(c);
+                    let bg = "var(--bg)";
+                    let border = "2px solid var(--border)";
+                    if (phase === "feedback" && result) {
+                      if (c === answer && result.is_correct) { bg = "var(--success)"; border = "2px solid var(--success)"; }
+                      else if (c === answer && !result.is_correct) { bg = "var(--error)"; border = "2px solid var(--error)"; }
+                      else if (c === result.correct_answer && !result.is_correct) { bg = "var(--success)"; border = "2px solid var(--success)"; }
+                    }
+                    return (
+                      <button
+                        key={c}
+                        style={{ ...styles.clockChoiceBtn, background: bg, border }}
+                        onClick={() => phase === "answering" && handleChoice(c)}
+                        disabled={phase === "feedback"}
+                      >
+                        <Clock hour={t.hour} minute={t.minute} size={110} />
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
               <div style={styles.choices}>
                 {problem.choices.map((c) => {
                   let bg = "var(--bg)";
@@ -188,6 +272,7 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
                   );
                 })}
               </div>
+              )
             ) : (
               <>
                 <div style={styles.inputRow}>
@@ -381,6 +466,22 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 10,
     cursor: "pointer",
     transition: "background 0.1s",
+  },
+  clockQuestion: { display: "flex", flexDirection: "column", alignItems: "center", gap: 14 },
+  clockPrompt: { fontSize: 20, fontWeight: 600, textAlign: "center", margin: 0 },
+  digitalTime: { fontSize: 64, fontWeight: 700, fontFamily: "monospace", margin: 0, letterSpacing: 2 },
+  twoClocks: { display: "flex", alignItems: "center", gap: 12, justifyContent: "center" },
+  clockArrow: { fontSize: 32, color: "var(--text-muted)" },
+  clockChoices: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, justifyItems: "center" },
+  clockChoiceBtn: {
+    padding: 8,
+    background: "var(--bg)",
+    borderRadius: 12,
+    cursor: "pointer",
+    transition: "background 0.15s",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   feedback: { display: "flex", flexDirection: "column", gap: 12, alignItems: "center" },
   feedbackText: { fontSize: 20, fontWeight: 600 },
