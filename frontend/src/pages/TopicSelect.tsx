@@ -17,6 +17,7 @@ const TOPICS: Topic[] = [
   { id: "fractions", label: S.topicFractions, desc: S.topicFractionsDesc, emoji: "½" },
   { id: "hebrew_letters", label: S.topicHebrewLetters, desc: S.topicHebrewLettersDesc, emoji: "🔤", forGrades: ["preschool"] },
   { id: "clock", label: S.topicClock, desc: S.topicClockDesc, emoji: "🕐" },
+  { id: "powers", label: S.topicPowers, desc: S.topicPowersDesc, emoji: "xⁿ", forGrades: ["1st", "2nd"] },
 ];
 
 interface Props {

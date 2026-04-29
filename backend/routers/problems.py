@@ -55,6 +55,9 @@ def _get_generator(topic: str):
     if topic == "clock":
         from backend.generators import clock
         return clock.generate
+    if topic == "powers":
+        from backend.generators import powers
+        return powers.generate
     raise ValueError(f"Unknown topic: {topic}")
 
 

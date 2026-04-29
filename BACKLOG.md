@@ -9,6 +9,7 @@ Last updated: 2026-04-29
 - **sequences** (סדרות מספרים) — fill-in-the-missing-number, difficulty 1–20
 - **word_problems** (בעיות מילוליות) — Hebrew story problems, ~20 templates, difficulty 1–20 (2026-04-25)
 - **fractions** (שברים) — recognition, comparison, arithmetic, difficulty 1–20
+- **powers** (חזקות) — squares, cubes, powers of 10, mixed expr, reverse `?²=n`, higher exponents; gated to 1st/2nd grade (2026-04-29)
 
 ### Backlog
 - [ ] **Comparisons & Ordering** (השוואה וסדר) — sort numbers smallest→largest; needs multi-input or drag-and-drop UI

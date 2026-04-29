@@ -14,6 +14,8 @@ export const S = {
   topicHebrewLettersDesc: "הכר אותיות עברית",
   topicClock: "שעון",
   topicClockDesc: "לקרוא את השעה",
+  topicPowers: "חזקות",
+  topicPowersDesc: "3² , 2³ , 10⁴ ועוד",
   clockReadHour: "איזו שעה השעון מראה?",
   clockReadMinute: "כמה דקות?",
   clockReadFull: "מה השעה?",
