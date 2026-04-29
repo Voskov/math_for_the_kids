@@ -42,7 +42,7 @@ docker network create infra    # create it once if missing
 - `backend/main.py` — FastAPI app; CORS allows `:5173` for local dev
 - `backend/models.py` — SQLAlchemy models: `Kid`, `KidTopicLevel`, `Session`, `SessionProblem`
 - `backend/database.py` — SQLite at `data/math_tutor.db`; seeds 3 kids on first run
-- `backend/adaptive.py` — ELO engine: correct+fast → +2, correct+slow → +1, wrong → −2; promotes at +6, demotes at −4
+- `backend/adaptive.py` — ELO engine: correct+fast → +2, correct+slow → +1, wrong → −2; promotes at +40, demotes at −16
 - `backend/routers/problems.py` — `GET /problems/next/{session_id}` and `POST /problems/submit`; difficulty update happens on submit
 - `backend/routers/sessions.py` — `POST /sessions/start`, `GET /sessions/{id}/summary`
 - `backend/generators/arithmetic.py` — pure algorithmic generator; difficulty 1–20 maps to specific problem types (see file docstring)

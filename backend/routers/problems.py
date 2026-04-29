@@ -1,3 +1,4 @@
+import random
 from datetime import datetime
 from fractions import Fraction
 from fastapi import APIRouter, Depends, HTTPException
@@ -5,7 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session as DBSession
 from backend.database import get_db
 from backend.models import KidTopicLevel, Session, SessionProblem
-from backend.adaptive import update_level
+from backend.adaptive import MAX_DIFFICULTY, MIN_DIFFICULTY, update_level
 from backend import generators
 
 router = APIRouter(prefix="/problems", tags=["problems"])
@@ -76,6 +77,16 @@ _TOPIC_START_DIFFICULTY: dict[str, float] = {
 }
 
 
+def _pick_effective_difficulty(base: float) -> float:
+    """Mix levels: 70% at base, 20% at base-1, 10% at base+1 (clamped)."""
+    roll = random.random()
+    if roll < 0.70:
+        return base
+    if roll < 0.90:
+        return max(MIN_DIFFICULTY, base - 1.0)
+    return min(MAX_DIFFICULTY, base + 1.0)
+
+
 def _get_or_create_level(db: DBSession, kid_id: int, topic: str) -> KidTopicLevel:
     level = (
         db.query(KidTopicLevel)
@@ -117,15 +128,16 @@ def next_problem(session_id: int, db: DBSession = Depends(get_db)):
         )
 
     level = _get_or_create_level(db, session.kid_id, session.topic)
+    effective_diff = _pick_effective_difficulty(level.difficulty_level)
     gen = _get_generator(session.topic)
-    problem_data = gen(level.difficulty_level)
+    problem_data = gen(effective_diff)
 
     sp = SessionProblem(
         session_id=session_id,
         question_text=problem_data["question"],
         correct_answer=problem_data["answer"],
         tts_word=problem_data.get("tts_word"),
-        difficulty_at_time=level.difficulty_level,
+        difficulty_at_time=effective_diff,
         asked_at=datetime.utcnow(),
     )
     db.add(sp)
@@ -137,7 +149,7 @@ def next_problem(session_id: int, db: DBSession = Depends(get_db)):
         question=sp.question_text,
         session_problem_number=answered_count + 1,
         total_problems=session.problem_count,
-        difficulty=level.difficulty_level,
+        difficulty=effective_diff,
         choices=problem_data.get("choices"),
         tts_word=sp.tts_word,
     )
@@ -165,6 +177,7 @@ def submit_answer(body: SubmitAnswerIn, db: DBSession = Depends(get_db)):
         level.score_accumulator,
         is_correct,
         body.time_taken_s,
+        problem_level=sp.difficulty_at_time,
     )
     level.difficulty_level = new_diff
     level.score_accumulator = new_acc
