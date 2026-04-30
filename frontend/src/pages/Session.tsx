@@ -251,7 +251,7 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
                   })}
                 </div>
               ) : (
-              <div style={styles.choices}>
+              <div style={problem.choices.some((c) => c.length > 6) ? styles.choicesGrid : styles.choices}>
                 {problem.choices.map((c) => {
                   let bg = "var(--bg)";
                   let color: string | undefined = undefined;
@@ -445,6 +445,12 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 12,
     justifyContent: "center",
     direction: "ltr",
+  },
+  choicesGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: 12,
+    direction: "rtl",
   },
   choiceBtn: {
     flex: 1,

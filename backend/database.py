@@ -1,3 +1,6 @@
+import hashlib
+import json
+from pathlib import Path
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session
 
@@ -19,6 +22,7 @@ def init_db():
     from backend import models  # noqa: F401 — ensures models are registered
     Base.metadata.create_all(bind=engine)
     _seed_kids()
+    _seed_trivia_bank()
 
 
 def _seed_kids():
@@ -41,5 +45,57 @@ def _seed_kids():
                     topic=topic,
                     difficulty_level=default_levels[kid.starting_grade],
                     score_accumulator=0.0,
+                ))
+        db.commit()
+
+
+_TRIVIA_BANK_DIR = Path(__file__).parent / "generators" / "trivia_bank"
+
+
+def _trivia_rows():
+    direct_path = _TRIVIA_BANK_DIR / "direct.json"
+    clue_path = _TRIVIA_BANK_DIR / "clue.json"
+    if direct_path.exists():
+        for item in json.loads(direct_path.read_text(encoding="utf-8")):
+            yield {
+                "subtype": "direct",
+                "difficulty": 5,
+                "question": item["question"],
+                "correct_answer": item["correct_answer"],
+                "distractors": item["distractors"],
+            }
+    if clue_path.exists():
+        for item in json.loads(clue_path.read_text(encoding="utf-8")):
+            yield {
+                "subtype": "clue",
+                "difficulty": 12,
+                "question": item["description"],
+                "correct_answer": item["correct_answer"],
+                "distractors": item["distractors"],
+            }
+
+
+def _seed_trivia_bank():
+    from backend.models import BankQuestion
+    with Session(engine) as db:
+        for r in _trivia_rows():
+            h = hashlib.sha256(r["question"].encode("utf-8")).hexdigest()[:16]
+            existing = db.query(BankQuestion).filter_by(source_hash=h).first()
+            distractors_json = json.dumps(r["distractors"], ensure_ascii=False)
+            if existing:
+                existing.question = r["question"]
+                existing.correct_answer = r["correct_answer"]
+                existing.distractors = distractors_json
+                existing.difficulty = r["difficulty"]
+                existing.subtype = r["subtype"]
+            else:
+                db.add(BankQuestion(
+                    topic="trivia",
+                    subtype=r["subtype"],
+                    difficulty=r["difficulty"],
+                    question=r["question"],
+                    correct_answer=r["correct_answer"],
+                    distractors=distractors_json,
+                    source_hash=h,
                 ))
         db.commit()

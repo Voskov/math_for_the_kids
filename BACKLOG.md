@@ -5,7 +5,9 @@ Last updated: 2026-04-30
 ## Bugs (HIGH PRIORITY)
 
 - [ ] **Kids dropping levels unexpectedly** — kids report level decreases, cause unknown. Investigate `backend/adaptive.py` (−2 on wrong, demote at −16) + check level-history in admin dashboard. Repro: pull recent `KidTopicLevel` history, correlate with `SessionProblem` outcomes. Hypothesis: demote threshold too aggressive, or wrong-answer penalty stacking inside one session.
-- [ ] **Repeated problems within session** — same problem (e.g. `8²`) appears twice back-to-back. Generators are stateless per-call → no dedup across the 10-problem session. Fix: track recently-served problems in `Session` (list of problem signatures) and re-roll in `GET /problems/next` if collision. Affects all generators (`backend/generators/*`).
+
+### Fixed
+- **Repeated problems within session** (2026-04-30) — `GET /problems/next` now re-rolls up to 10× against existing `SessionProblem.question_text` for the session
 
 ## Math
 
@@ -24,8 +26,6 @@ Last updated: 2026-04-30
 
 ## Language
 
-Prerequisite for both items below: multiple-choice UI mode in Session (currently free-text only). See Infrastructure.
-
 ### Shipped
 - **hebrew_letters** (אותיות) — Hebrew letter recognition, preschool-only (Ben), emoji + TTS, two problem types A/B (2026-04-27)
 
@@ -35,9 +35,8 @@ Prerequisite for both items below: multiple-choice UI mode in Session (currently
 
 ## Trivia / General Knowledge
 
-### Backlog
-- [ ] **Trivia** (ידע כללי) — e.g. "מי היה אלברט איינשטיין?"; age-tier difficulty (preschool / 1st / 2nd grade) instead of ELO 1–20; 4-option multiple-choice
-  - Generation: free UI prompting (Claude.ai / ChatGPT) + manual import first; Ollama (local, free) for bulk later
+### Shipped
+- **trivia** (ידע כללי) — famous people; 4-option MC; bank in `backend/generators/trivia_bank/{direct,clue}.json` seeded into `BankQuestion` table on startup; difficulty 5 (direct) / 12 (clue) / 18+ swaps in cross-bank distractors; cross-session no-repeat per kid; gated to 1st/2nd grade (2026-04-30). ~47 Q to start; expand via Ollama later.
 
 ## Infrastructure / Cross-cutting
 
@@ -46,10 +45,10 @@ Prerequisite for both items below: multiple-choice UI mode in Session (currently
 - **Admin dashboard** — per-kid level history (recent)
 - **Per-kid topic visibility** — `forGrades` filter in TopicSelect
 - **TTS** — browser `speechSynthesis`, `he-IL` (currently hebrew_letters only)
+- **Multiple-choice UI in Session** — `choices[]` rendered as buttons; used by hebrew_letters / fractions / clock / trivia
+- **BankQuestion DB table** — generic pre-generated question bank (`bank_questions`); first consumer = trivia; reusable for sentence_completion / word_analogies (2026-04-30)
 
 ### Backlog
-- [ ] **Multiple-choice UI in Session** — unblocks Language category + Trivia
-- [ ] **BankQuestion DB table** — pre-generated questions, shared by word_problems + trivia, 4-option MC
 - [ ] **Live timer in session header** — currently only on Summary
 - [ ] **Real images for hebrew_letters** — replace emoji in `_WORD_BANK` (`backend/generators/hebrew_letters.py`); render `<img>` in `Session.tsx`. Candidate source: totcards.com
 - [ ] **Kid profile editor UI** — names + avatars (currently hardcoded seed)

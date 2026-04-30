@@ -59,6 +59,9 @@ def _get_generator(topic: str):
     if topic == "powers":
         from backend.generators import powers
         return powers.generate
+    if topic == "trivia":
+        from backend.generators import trivia
+        return trivia.generate
     raise ValueError(f"Unknown topic: {topic}")
 
 
@@ -74,6 +77,7 @@ def _answers_match(kid: str, correct: str) -> bool:
 _TOPIC_START_DIFFICULTY: dict[str, float] = {
     "hebrew_letters": 1.0,
     "clock": 1.0,
+    "trivia": 5.0,
 }
 
 
@@ -128,9 +132,24 @@ def next_problem(session_id: int, db: DBSession = Depends(get_db)):
         )
 
     level = _get_or_create_level(db, session.kid_id, session.topic)
-    effective_diff = _pick_effective_difficulty(level.difficulty_level)
     gen = _get_generator(session.topic)
-    problem_data = gen(effective_diff)
+
+    last_question = (
+        db.query(SessionProblem.question_text)
+        .filter(SessionProblem.session_id == session_id)
+        .order_by(SessionProblem.id.desc())
+        .limit(1)
+        .scalar()
+    )
+
+    for _ in range(5):
+        effective_diff = _pick_effective_difficulty(level.difficulty_level)
+        if session.topic == "trivia":
+            problem_data = gen(effective_diff, db=db, kid_id=session.kid_id)
+        else:
+            problem_data = gen(effective_diff)
+        if problem_data["question"] != last_question:
+            break
 
     sp = SessionProblem(
         session_id=session_id,

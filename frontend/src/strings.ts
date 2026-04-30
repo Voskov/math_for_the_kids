@@ -20,6 +20,8 @@ export const S = {
   topicClockDesc: "לקרוא את השעה",
   topicPowers: "חזקות",
   topicPowersDesc: "3² , 2³ , 10⁴ ועוד",
+  topicTrivia: "ידע כללי",
+  topicTriviaDesc: "אנשים מפורסמים מההיסטוריה",
   clockReadHour: "איזו שעה השעון מראה?",
   clockReadMinute: "כמה דקות?",
   clockReadFull: "מה השעה?",

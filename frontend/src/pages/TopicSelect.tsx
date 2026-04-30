@@ -21,6 +21,7 @@ const TOPICS: Topic[] = [
   { id: "clock", label: S.topicClock, desc: S.topicClockDesc, emoji: "🕐", category: "math" },
   { id: "powers", label: S.topicPowers, desc: S.topicPowersDesc, emoji: "xⁿ", category: "math", forGrades: ["1st", "2nd"] },
   { id: "hebrew_letters", label: S.topicHebrewLetters, desc: S.topicHebrewLettersDesc, emoji: "🔤", category: "language", forGrades: ["preschool"] },
+  { id: "trivia", label: S.topicTrivia, desc: S.topicTriviaDesc, emoji: "🌍", category: "trivia", forGrades: ["1st", "2nd"] },
 ];
 
 const CATEGORY_ORDER: Category[] = ["math", "language", "trivia"];

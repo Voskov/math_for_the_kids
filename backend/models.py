@@ -42,6 +42,19 @@ class Session(Base):
     problems: Mapped[list["SessionProblem"]] = relationship("SessionProblem", back_populates="session")
 
 
+class BankQuestion(Base):
+    __tablename__ = "bank_questions"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    topic: Mapped[str] = mapped_column(String, nullable=False, index=True)
+    subtype: Mapped[str | None] = mapped_column(String, nullable=True)
+    difficulty: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
+    question: Mapped[str] = mapped_column(String, nullable=False)
+    correct_answer: Mapped[str] = mapped_column(String, nullable=False)
+    distractors: Mapped[str] = mapped_column(String, nullable=False)  # JSON-encoded list[str]
+    source_hash: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+
+
 class SessionProblem(Base):
     __tablename__ = "session_problems"
 
