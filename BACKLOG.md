@@ -1,6 +1,11 @@
 # Backlog
 
-Last updated: 2026-04-29
+Last updated: 2026-04-30
+
+## Bugs (HIGH PRIORITY)
+
+- [ ] **Kids dropping levels unexpectedly** — kids report level decreases, cause unknown. Investigate `backend/adaptive.py` (−2 on wrong, demote at −16) + check level-history in admin dashboard. Repro: pull recent `KidTopicLevel` history, correlate with `SessionProblem` outcomes. Hypothesis: demote threshold too aggressive, or wrong-answer penalty stacking inside one session.
+- [ ] **Repeated problems within session** — same problem (e.g. `8²`) appears twice back-to-back. Generators are stateless per-call → no dedup across the 10-problem session. Fix: track recently-served problems in `Session` (list of problem signatures) and re-roll in `GET /problems/next` if collision. Affects all generators (`backend/generators/*`).
 
 ## Math
 
