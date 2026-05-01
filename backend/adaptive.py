@@ -11,19 +11,20 @@ The score per answer is weighted by offset = problem_level - kid_level:
 Base scoring:
   correct + fast  (< 15s)  → +2
   correct + slow  (15-45s) → +1
-  wrong                    → -2
+  wrong                    → -1
 
-Promote at +40 accumulated; demote at -16; reset accumulator on level change.
+Promote at +40 accumulated; demote at -32; reset accumulator on level change.
+Negative accumulator clears at session start (clean slate per session).
 """
 
 PROMOTE_THRESHOLD = 40.0
-DEMOTE_THRESHOLD = -16.0
+DEMOTE_THRESHOLD = -32.0
 MIN_DIFFICULTY = 1.0
 MAX_DIFFICULTY = 20.0
 
 SCORE_CORRECT_FAST = 2.0
 SCORE_CORRECT_SLOW = 1.0
-SCORE_WRONG = -2.0
+SCORE_WRONG = -1.0
 FAST_THRESHOLD_S = 15.0
 SLOW_THRESHOLD_S = 45.0
 

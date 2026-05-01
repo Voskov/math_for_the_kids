@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session as DBSession
 from backend.database import get_db
-from backend.models import Kid, Session, SessionProblem
+from backend.models import Kid, KidTopicLevel, Session, SessionProblem
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
 
@@ -48,6 +48,13 @@ def start_session(body: StartSessionIn, db: DBSession = Depends(get_db)):
     kid = db.get(Kid, body.kid_id)
     if not kid:
         raise HTTPException(status_code=404, detail="Kid not found")
+    level = (
+        db.query(KidTopicLevel)
+        .filter(KidTopicLevel.kid_id == body.kid_id, KidTopicLevel.topic == body.topic)
+        .first()
+    )
+    if level and level.score_accumulator < 0:
+        level.score_accumulator = 0.0
     session = Session(
         kid_id=body.kid_id,
         topic=body.topic,
