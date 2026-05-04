@@ -65,102 +65,110 @@ def login(sess: requests.Session, username: str, password: str) -> bool:
 
 def get_topic_links(sess: requests.Session, group_id: int) -> list[dict]:
     """Return list of {label, url} for each topic in the group."""
-    url = f"{BASE_URL}/exams/by_group/{group_id}/{GRADE_ID}"
-    resp = sess.get(url, headers=HEADERS)
+    base_url = f"{BASE_URL}/exams/by_group/{group_id}/{GRADE_ID}"
+    resp = sess.get(base_url, headers=HEADERS)
     soup = BeautifulSoup(resp.text, "html.parser")
 
     topics = []
     seen_hrefs = set()
     for a in soup.select("a[href]"):
         href = a["href"]
-        if not href or href in seen_hrefs:
+        if not href or href in seen_hrefs or href == "/":
             continue
-        # Skip back-to-home, non-exam, and group-level links
-        full = urljoin(BASE_URL, href)
-        if "/exams/" not in full or "/by_group/" in full or "/active/" in full:
+        # Only accept topic links: relative ?subject_id=X query params
+        if not href.startswith("?subject_id="):
             continue
+        full = urljoin(base_url, href)
         label = a.get_text(" ", strip=True)
         if not label:
             continue
         topics.append({"label": label, "url": full})
         seen_hrefs.add(href)
 
-    # Also look for form-submit buttons that might navigate to topics
-    for form in soup.select("form[action]"):
-        action = urljoin(BASE_URL, form["action"])
-        if "/exams/" not in action or action in seen_hrefs:
-            continue
-        label = form.get_text(" ", strip=True)[:40]
-        topics.append({"label": label, "url": action, "method": "POST",
-                        "data": {i["name"]: i.get("value", "") for i in form.select("input")}})
-        seen_hrefs.add(action)
-
     return topics
 
 
 def start_topic_session(sess: requests.Session, topic: dict) -> str | None:
     """Navigate to topic and return the resulting exam URL (or None on failure)."""
-    if topic.get("method") == "POST":
-        resp = sess.post(topic["url"], data=topic.get("data", {}), headers=HEADERS, allow_redirects=True)
-    else:
-        resp = sess.get(topic["url"], headers=HEADERS, allow_redirects=True)
+    for attempt in range(2):
+        if topic.get("method") == "POST":
+            resp = sess.post(topic["url"], data=topic.get("data", {}), headers=HEADERS, allow_redirects=True)
+        else:
+            resp = sess.get(topic["url"], headers=HEADERS, allow_redirects=True)
 
-    if "/exams/" in resp.url and "/by_group/" not in resp.url:
-        return resp.url
-    # Maybe we need to look for a redirect or a meta-refresh
-    soup = BeautifulSoup(resp.text, "html.parser")
-    # Check if exam form is on this page
-    if soup.select_one("form#question-form"):
-        return resp.url
+        url = resp.url
+        # Skip summary pages (completed/expired sessions)
+        if url.endswith("/summary") or "/summary" in url.split("?")[0]:
+            print(f"    -> summary redirect, attempt {attempt + 1}")
+            if attempt == 0:
+                sleep(5, 10)
+                continue
+            return None
+
+        if "/exams/" in url and "/by_group/" not in url:
+            soup = BeautifulSoup(resp.text, "html.parser")
+            if soup.select_one("form#question-form"):
+                return url
+            # No form yet — session may redirect to summary on next GET
+            return None
+
     return None
 
 
 def parse_question_page(soup: BeautifulSoup, group_id: int) -> dict | None:
-    """Extract question data from an exam page."""
+    """Extract question data from an exam page. Returns None for unsupported types."""
     form = soup.select_one("form#question-form")
     if not form:
         return None
 
-    # Question text: first non-trivial <p> inside the form
-    question_text = ""
-    for p in form.select("p"):
-        text = p.get_text(" ", strip=True)
-        if text and len(text) > 3:
-            question_text = text
-            break
-
-    if not question_text:
-        # Fallback: generic div/span with substantial text before the radio list
-        for el in form.children:
-            if hasattr(el, "get_text"):
-                text = el.get_text(" ", strip=True)
-                if len(text) > 10 and "הַבָּא" not in text:
-                    question_text = text
-                    break
-
-    # Answer options from radio labels
-    options = []
-    for label in form.select("label"):
-        radio = label.find("input", {"type": "radio"})
-        if radio:
-            options.append({
-                "answer_id": radio.get("value", ""),
-                "text": label.get_text(strip=True),
-            })
-
-    if not options:
+    # Skip image-based questions (no text to store)
+    if form.select_one("img#question_image"):
         return None
 
-    # Correct answer: pre-rendered as .label.success in wrong-answer dialog
+    # Skip fill-in-blank (sequence with text input, uses true/false radio trick)
+    if form.select_one("#original-sequence, #the-sequence"):
+        return None
+
+    # Question text: join all <p> tags inside the form
+    paras = [p.get_text(" ", strip=True) for p in form.select("p") if p.get_text(strip=True)]
+    question_text = " ".join(paras)
+
+    if not question_text:
+        return None
+
+    # Correct answer and distractors via data-is-correct attribute on labels
     correct_answer = ""
-    correct_el = soup.select_one("#wrong-answer .question-in-summary .label.success")
-    if correct_el:
-        correct_answer = correct_el.get_text(strip=True)
+    distractors = []
+    for label in form.select("label[data-is-correct]"):
+        text = label.get_text(strip=True)
+        if label.get("data-is-correct") == "True":
+            correct_answer = text
+        else:
+            distractors.append(text)
+
+    # Fallback: data-correct on the radio input itself (older page variant)
+    if not correct_answer:
+        for inp in form.select("input[data-correct='True']"):
+            label = inp.find_parent("label")
+            if label:
+                correct_answer = label.get_text(strip=True)
+        for inp in form.select("input[type=radio]:not([data-correct])"):
+            label = inp.find_parent("label")
+            if label:
+                distractors.append(label.get_text(strip=True))
+
+    # Skip if no usable MC answer structure (e.g. true/false fill-in submit radios)
+    if not correct_answer or set(distractors) <= {"true", "false"}:
+        return None
 
     # Hidden form fields for submission
     csrf = get_csrf(soup)
     q_id_el = form.select_one("[name=question_id]")
     question_id = q_id_el["value"] if q_id_el else ""
+
+    # First radio value (any option) for advancing the session
+    first_radio = form.select_one("input[type=radio][name=answer_id]")
+    first_answer_id = first_radio["value"] if first_radio else ""
 
     # Question number + topic label from footer bar
     question_num = None
@@ -180,20 +188,21 @@ def parse_question_page(soup: BeautifulSoup, group_id: int) -> dict | None:
         "question_num": question_num,
         "question": question_text,
         "correct_answer": correct_answer,
-        "options": options,
+        "distractors": distractors,
         "_csrf": csrf,
         "_question_id": question_id,
+        "_first_answer_id": first_answer_id,
     }
 
 
 def advance_question(sess: requests.Session, url: str, q: dict) -> bool:
-    """Submit an answer (first option) to advance server-side to next question."""
-    if not q.get("_question_id") or not q.get("options"):
+    """Submit an answer to advance server-side to next question."""
+    if not q.get("_question_id") or not q.get("_first_answer_id"):
         return False
     data = {
         "csrfmiddlewaretoken": q["_csrf"],
         "question_id": q["_question_id"],
-        "answer_id": q["options"][0]["answer_id"],
+        "answer_id": q["_first_answer_id"],
         "subject_time_over": "False",
         "ajax": "true",
     }
@@ -219,12 +228,31 @@ def scrape_session(sess: requests.Session, exam_url: str, group_id: int) -> list
             break
 
         soup = BeautifulSoup(resp.text, "html.parser")
-        q = parse_question_page(soup, group_id)
-        if not q:
-            print(f"    No question form on Q{q_num}, session ended")
+
+        # Check if session ended (no form at all)
+        if not soup.select_one("form#question-form"):
+            print(f"    No form on Q{q_num}, session ended")
             break
 
+        q = parse_question_page(soup, group_id)
+
+        # Advance through unsupported question types (image-only, fill-in-blank)
+        if q is None:
+            print(f"    Q{q_num}: skipped (unsupported type)")
+            # Still need to advance — extract form fields directly
+            form = soup.select_one("form#question-form")
+            csrf = get_csrf(soup)
+            q_id = (form.select_one("[name=question_id]") or {}).get("value", "")
+            radio = form.select_one("input[type=radio][name=answer_id]")
+            if q_id and radio:
+                advance_question(sess, current_url, {
+                    "_csrf": csrf, "_question_id": q_id,
+                    "_first_answer_id": radio["value"],
+                })
+            continue
+
         if q["question"]:
+            h = hashlib.sha256(q["question"].encode()).hexdigest()[:16]
             records.append({
                 "source": "haprofessor",
                 "group_id": q["group_id"],
@@ -232,11 +260,10 @@ def scrape_session(sess: requests.Session, exam_url: str, group_id: int) -> list
                 "question_num": q["question_num"],
                 "question": q["question"],
                 "correct_answer": q["correct_answer"],
-                "distractors": [o["text"] for o in q["options"] if o["text"] != q["correct_answer"]],
-                "source_hash": hashlib.sha256(q["question"].encode()).hexdigest()[:16],
+                "distractors": q["distractors"],
+                "source_hash": h,
             })
-            status = "✓ " + q["question"][:60]
-            print(f"    Q{q_num}: {status}")
+            print(f"    Q{q_num}: {q['question'][:70]}")
 
         # Advance to next question
         advance_question(sess, current_url, q)
@@ -245,7 +272,7 @@ def scrape_session(sess: requests.Session, exam_url: str, group_id: int) -> list
 
 
 def main() -> None:
-    load_dotenv()
+    load_dotenv(Path(__file__).parent.parent / ".env")
 
     parser = argparse.ArgumentParser(description="Scrape haprofessor exercises")
     parser.add_argument("--sessions", type=int, default=5, help="Sessions per topic (default 5)")
