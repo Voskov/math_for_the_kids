@@ -23,6 +23,7 @@ def init_db():
     Base.metadata.create_all(bind=engine)
     _seed_kids()
     _seed_trivia_bank()
+    _seed_countries_bank()
 
 
 def _seed_kids():
@@ -50,6 +51,7 @@ def _seed_kids():
 
 
 _TRIVIA_BANK_DIR = Path(__file__).parent / "generators" / "trivia_bank"
+_COUNTRIES_BANK_PATH = Path(__file__).parent.parent / "countries" / "countries_capitals_trivia.json"
 
 
 def _trivia_rows():
@@ -95,6 +97,37 @@ def _seed_trivia_bank():
                     difficulty=r["difficulty"],
                     question=r["question"],
                     correct_answer=r["correct_answer"],
+                    distractors=distractors_json,
+                    source_hash=h,
+                ))
+        db.commit()
+
+
+def _seed_countries_bank():
+    from backend.models import BankQuestion
+    if not _COUNTRIES_BANK_PATH.exists():
+        return
+    items = json.loads(_COUNTRIES_BANK_PATH.read_text(encoding="utf-8"))
+    difficulty_map = {"country_to_capital": 5, "capital_to_country": 8}
+    with Session(engine) as db:
+        for item in items:
+            h = hashlib.sha256(item["question"].encode("utf-8")).hexdigest()[:16]
+            existing = db.query(BankQuestion).filter_by(source_hash=h).first()
+            distractors_json = json.dumps(item["distractors"], ensure_ascii=False)
+            diff = difficulty_map.get(item["type"], 8)
+            if existing:
+                existing.question = item["question"]
+                existing.correct_answer = item["correct_answer"]
+                existing.distractors = distractors_json
+                existing.difficulty = diff
+                existing.subtype = item["type"]
+            else:
+                db.add(BankQuestion(
+                    topic="countries",
+                    subtype=item["type"],
+                    difficulty=diff,
+                    question=item["question"],
+                    correct_answer=item["correct_answer"],
                     distractors=distractors_json,
                     source_hash=h,
                 ))

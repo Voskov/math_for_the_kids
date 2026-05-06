@@ -1,6 +1,7 @@
 import random
 from datetime import datetime
 from fractions import Fraction
+from loguru import logger
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.orm import Session as DBSession
@@ -62,6 +63,9 @@ def _get_generator(topic: str):
     if topic == "trivia":
         from backend.generators import trivia
         return trivia.generate
+    if topic == "countries":
+        from backend.generators import countries
+        return countries.generate
     raise ValueError(f"Unknown topic: {topic}")
 
 
@@ -78,6 +82,7 @@ _TOPIC_START_DIFFICULTY: dict[str, float] = {
     "hebrew_letters": 1.0,
     "clock": 1.0,
     "trivia": 5.0,
+    "countries": 5.0,
 }
 
 
@@ -144,7 +149,7 @@ def next_problem(session_id: int, db: DBSession = Depends(get_db)):
 
     for _ in range(5):
         effective_diff = _pick_effective_difficulty(level.difficulty_level)
-        if session.topic == "trivia":
+        if session.topic in ("trivia", "countries"):
             problem_data = gen(effective_diff, db=db, kid_id=session.kid_id)
         else:
             problem_data = gen(effective_diff)
@@ -198,6 +203,14 @@ def submit_answer(body: SubmitAnswerIn, db: DBSession = Depends(get_db)):
         body.time_taken_s,
         problem_level=sp.difficulty_at_time,
     )
+
+    logger.info(
+        f"submit_answer: kid_id={session.kid_id}, topic={session.topic}, "
+        f"level {level.difficulty_level} → {new_diff}, "
+        f"acc {level.score_accumulator:.1f} → {new_acc:.1f}, "
+        f"correct={is_correct}, time={body.time_taken_s}s"
+    )
+
     level.difficulty_level = new_diff
     level.score_accumulator = new_acc
 

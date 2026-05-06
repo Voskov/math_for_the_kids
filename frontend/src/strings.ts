@@ -22,6 +22,8 @@ export const S = {
   topicPowersDesc: "3² , 2³ , 10⁴ ועוד",
   topicTrivia: "ידע כללי",
   topicTriviaDesc: "אנשים מפורסמים מההיסטוריה",
+  topicCountries: "מדינות ובירות",
+  topicCountriesDesc: "בירות מדינות העולם",
   clockReadHour: "איזו שעה השעון מראה?",
   clockReadMinute: "כמה דקות?",
   clockReadFull: "מה השעה?",
