@@ -17,6 +17,8 @@ Promote at +40 accumulated; demote at -32; reset accumulator on level change.
 Negative accumulator clears at session start (clean slate per session).
 """
 
+from loguru import logger
+
 PROMOTE_THRESHOLD = 40.0
 DEMOTE_THRESHOLD = -32.0
 MIN_DIFFICULTY = 1.0
@@ -61,12 +63,19 @@ def update_level(
     delta = compute_score(is_correct, time_taken_s, offset)
     new_acc = score_accumulator + delta
 
+    logger.debug(
+        f"score_calc: level={difficulty_level}, acc={score_accumulator}, "
+        f"correct={is_correct}, time={time_taken_s}s, offset={offset}, delta={delta}, new_acc={new_acc}"
+    )
+
     if new_acc >= PROMOTE_THRESHOLD:
         new_level = min(difficulty_level + 1.0, MAX_DIFFICULTY)
+        logger.info(f"PROMOTE: level {difficulty_level} → {new_level} (acc={new_acc} >= {PROMOTE_THRESHOLD})")
         return new_level, 0.0
 
     if new_acc <= DEMOTE_THRESHOLD:
         new_level = max(difficulty_level - 1.0, MIN_DIFFICULTY)
+        logger.warning(f"DEMOTE: level {difficulty_level} → {new_level} (acc={new_acc} <= {DEMOTE_THRESHOLD})")
         return new_level, 0.0
 
     return difficulty_level, new_acc
