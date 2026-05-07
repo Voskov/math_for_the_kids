@@ -2,46 +2,42 @@
 Hebrew letter recognition for Ben (preschool).
 
 Difficulty map:
-  1–2   א ב ג — 3 choices, show emoji → pick letter
-  3–4   + ד ה — 4 choices
-  5–6   + ו ז ח
-  7–8   + ט י כ
-  9–10  + ל מ נ
-  11–12 + ס ע פ
-  13–14 + צ ק ר
-  15–16 + ש ת (all 22)
-  17–18 all 22, mix Type A (emoji→letter) and Type B (letter→emoji)
-  19–20 all 22, prefer visually confusable distractors
+  1–2   א ב ג — 3 choices, Type A only
+  3–4   + ד ה — 4 choices, mix A / C
+  5–10  + more letters — mix A / C
+  11–16 + more letters — mix A / C / D
+  17–20 all 22 letters — mix A / B / C / D
 
-Type A: question = emoji, choices = Hebrew letters, tts_word = Hebrew word
-Type B: question = Hebrew letter, choices = emoji, tts_word = letter name
+Type A: emoji → pick letter       (question=emoji, tts_word=Hebrew word)
+Type B: letter → pick emoji       (question=letter, tts_word=letter name)
+Type C: letter name → pick letter (question=letter name, tts_word=letter name)
+Type D: Hebrew word → pick first letter (question=word, tts_word=word)
 """
 import random
 
-# (word, emoji) pairs per letter — used as question/distractor material
 _WORD_BANK: dict[str, list[tuple[str, str]]] = {
-    "א": [("ארנב", "🐰"), ("אריה", "🦁"), ("אוטובוס", "🚌")],
-    "ב": [("בית", "🏠"), ("בלון", "🎈"), ("בננה", "🍌")],
-    "ג": [("גמל", "🐪"), ("גזר", "🥕"), ("גלידה", "🍦")],
-    "ד": [("דג", "🐟"), ("דוב", "🐻"), ("דלת", "🚪")],
-    "ה": [("היפופוטם", "🦛"), ("הר", "🏔️")],
-    "ו": [("ורד", "🌹"), ("וילון", "🪟")],
-    "ז": [("זאב", "🐺"), ("זבוב", "🪰"), ("זית", "🫒")],
-    "ח": [("חתול", "🐱"), ("חמור", "🫏"), ("חמניה", "🌻")],
-    "ט": [("טלה", "🐑"), ("טלפון", "📱")],
-    "י": [("יד", "✋"), ("ירח", "🌙"), ("ינשוף", "🦉")],
-    "כ": [("כלב", "🐕"), ("כוכב", "⭐"), ("כוס", "🥤")],
-    "ל": [("לב", "❤️"), ("לוויתן", "🐋"), ("לחם", "🍞")],
-    "מ": [("מכונית", "🚗"), ("מטוס", "✈️"), ("מנורה", "💡")],
-    "נ": [("נמר", "🐆"), ("נחש", "🐍"), ("נר", "🕯️")],
-    "ס": [("סוס", "🐴"), ("ספר", "📚"), ("סנאי", "🐿️")],
-    "ע": [("עץ", "🌳"), ("עכבר", "🐭"), ("עיט", "🦅")],
-    "פ": [("פרח", "🌸"), ("פרפר", "🦋"), ("פיל", "🐘")],
-    "צ": [("צב", "🐢"), ("צפרדע", "🐸"), ("צבי", "🦌")],
-    "ק": [("קוף", "🐒"), ("קיפוד", "🦔")],
-    "ר": [("רכבת", "🚂"), ("רובוט", "🤖")],
-    "ש": [("שמש", "☀️"), ("שוקולד", "🍫"), ("שן", "🦷")],
-    "ת": [("תפוח", "🍎"), ("תות", "🍓"), ("תרנגול", "🐓")],
+    "א": [("ארנב", "🐰"), ("אריה", "🦁"), ("אוטובוס", "🚌"), ("אבטיח", "🍉"), ("אננס", "🍍")],
+    "ב": [("בית", "🏠"), ("בלון", "🎈"), ("בננה", "🍌"), ("ברבור", "🦢"), ("בקבוק", "🍼")],
+    "ג": [("גמל", "🐪"), ("גזר", "🥕"), ("גלידה", "🍦"), ("גורילה", "🦍")],
+    "ד": [("דג", "🐟"), ("דוב", "🐻"), ("דלת", "🚪"), ("דינוזאור", "🦕")],
+    "ה": [("היפופוטם", "🦛"), ("הר", "🏔️"), ("הודו", "🦃"), ("המבורגר", "🍔"), ("הלוכית", "🐌")],
+    "ו": [("ורד", "🌹"), ("וילון", "🪟"), ("ווי", "🪝"), ("ופל", "🧇")],
+    "ז": [("זאב", "🐺"), ("זבוב", "🪰"), ("זית", "🫒"), ("זיקית", "🦎")],
+    "ח": [("חתול", "🐱"), ("חמור", "🫏"), ("חמניה", "🌻"), ("חיפושית", "🪲")],
+    "ט": [("טלה", "🐑"), ("טלפון", "📱"), ("טווס", "🦚"), ("טירה", "🏰"), ("טבעת", "💍")],
+    "י": [("יד", "✋"), ("ירח", "🌙"), ("ינשוף", "🦉"), ("יונה", "🕊️")],
+    "כ": [("כלב", "🐕"), ("כוכב", "⭐"), ("כוס", "🥤"), ("כדור", "⚽")],
+    "ל": [("לב", "❤️"), ("לוויתן", "🐋"), ("לחם", "🍞"), ("לימון", "🍋")],
+    "מ": [("מכונית", "🚗"), ("מטוס", "✈️"), ("מנורה", "💡"), ("מסוק", "🚁")],
+    "נ": [("נמר", "🐆"), ("נחש", "🐍"), ("נר", "🕯️"), ("נסיכה", "👸")],
+    "ס": [("סוס", "🐴"), ("ספר", "📚"), ("סנאי", "🐿️"), ("סירה", "⛵")],
+    "ע": [("עץ", "🌳"), ("עכבר", "🐭"), ("ענב", "🍇")],
+    "פ": [("פרח", "🌸"), ("פרפר", "🦋"), ("פיל", "🐘"), ("פינגווין", "🐧")],
+    "צ": [("צב", "🐢"), ("צפרדע", "🐸"), ("צבי", "🦌"), ("צלחת", "🍽️")],
+    "ק": [("קוף", "🐒"), ("קיפוד", "🦔"), ("קשת", "🌈"), ("קלמר", "🦑"), ("קנגורו", "🦘")],
+    "ר": [("רכבת", "🚂"), ("רובוט", "🤖"), ("רקטה", "🚀"), ("רגל", "🦶"), ("רוח", "💨")],
+    "ש": [("שמש", "☀️"), ("שוקולד", "🍫"), ("שן", "🦷"), ("שפן", "🐇")],
+    "ת": [("תפוח", "🍎"), ("תות", "🍓"), ("תרנגול", "🐓"), ("תמנון", "🐙")],
 }
 
 _LETTER_NAMES: dict[str, str] = {
@@ -52,11 +48,9 @@ _LETTER_NAMES: dict[str, str] = {
     "ש": "שין", "ת": "תו",
 }
 
-# Letters introduced in order of difficulty
 _SEQUENCE = ["א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט", "י",
              "כ", "ל", "מ", "נ", "ס", "ע", "פ", "צ", "ק", "ר", "ש", "ת"]
 
-# Letters that look visually similar — used for hard distractors at levels 19–20
 _CONFUSABLE: dict[str, list[str]] = {
     "ב": ["כ", "ד"], "כ": ["ב", "נ"], "ד": ["ר", "ב"], "ר": ["ד", "ו"],
     "ו": ["ז", "י"], "ז": ["ו", "י"], "ח": ["ה", "ת"], "ה": ["ח", "ת"],
@@ -93,17 +87,37 @@ def generate(difficulty: float) -> dict:
 
     letter = random.choice(pool)
     word, emoji = random.choice(_WORD_BANK[letter])
+    dist_letters = _distractors(letter, pool, choice_count - 1, d)
 
-    type_b = d >= 17 and random.random() < 0.5
+    if d <= 2:
+        qtype = "A"
+    elif d <= 6:
+        qtype = random.choice(["A", "A", "C"])
+    elif d <= 10:
+        qtype = random.choice(["A", "C"])
+    elif d <= 16:
+        qtype = random.choice(["A", "C", "D"])
+    else:
+        qtype = random.choice(["A", "B", "C", "D"])
 
-    if not type_b:
-        dist_letters = _distractors(letter, pool, choice_count - 1, d)
+    if qtype == "A":
         choices = [letter] + dist_letters
         random.shuffle(choices)
         return {"question": emoji, "answer": letter, "choices": choices, "tts_word": word}
-    else:
-        dist_letters = _distractors(letter, pool, choice_count - 1, d)
+
+    if qtype == "B":
         dist_emojis = [random.choice(_WORD_BANK[l])[1] for l in dist_letters]
         choices = [emoji] + dist_emojis
         random.shuffle(choices)
         return {"question": letter, "answer": emoji, "choices": choices, "tts_word": _LETTER_NAMES[letter]}
+
+    if qtype == "C":
+        name = _LETTER_NAMES[letter]
+        choices = [letter] + dist_letters
+        random.shuffle(choices)
+        return {"question": name, "answer": letter, "choices": choices, "tts_word": name}
+
+    # Type D: Hebrew word → pick first letter
+    choices = [letter] + dist_letters
+    random.shuffle(choices)
+    return {"question": word, "answer": letter, "choices": choices, "tts_word": word}
