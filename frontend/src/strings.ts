@@ -16,6 +16,8 @@ export const S = {
   topicFractionsDesc: "הכר, השווה, חבר, כפול ועוד",
   topicHebrewLetters: "אותיות",
   topicHebrewLettersDesc: "הכר אותיות עברית",
+  topicEnglishLetters: "אותיות אנגלית",
+  topicEnglishLettersDesc: "הכר אותיות A–Z",
   topicClock: "שעון",
   topicClockDesc: "לקרוא את השעה",
   topicPowers: "חזקות",

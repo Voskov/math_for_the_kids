@@ -54,6 +54,9 @@ def _get_generator(topic: str):
     if topic == "hebrew_letters":
         from backend.generators import hebrew_letters
         return hebrew_letters.generate
+    if topic == "english_letters":
+        from backend.generators import english_letters
+        return english_letters.generate
     if topic == "clock":
         from backend.generators import clock
         return clock.generate
@@ -80,6 +83,7 @@ def _answers_match(kid: str, correct: str) -> bool:
 
 _TOPIC_START_DIFFICULTY: dict[str, float] = {
     "hebrew_letters": 1.0,
+    "english_letters": 1.0,
     "clock": 1.0,
     "trivia": 5.0,
     "countries": 5.0,

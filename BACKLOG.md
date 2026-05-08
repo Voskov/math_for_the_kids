@@ -1,6 +1,6 @@
 # Backlog
 
-Last updated: 2026-05-07
+Last updated: 2026-05-08
 
 ## Bugs (HIGH PRIORITY)
 
@@ -28,22 +28,24 @@ Last updated: 2026-05-07
 
 ### Shipped
 - **hebrew_letters** (אותיות) — Hebrew letter recognition, preschool-only (Ben), emoji + TTS, two problem types A/B (2026-04-27)
+- **english_letters** (אותיות אנגלית) — 26 letters A–Z, 4 problem types (emoji→letter, letter→emoji, letter name→letter, word→first letter), confusable pairs at high difficulty; gated to 1st/2nd grade (Tom/Adam) (2026-05-08)
 
 ### Backlog
-- [ ] **English Letters** (אותיות אנגלית) — direct parallel to `hebrew_letters`; Ben only (preschool); 26 letters A–Z; same 4 problem types: emoji→letter, letter→emoji, letter name→letter, word→first letter; emoji word bank per letter; confusable pairs (b/d, p/q, m/n, u/n). Do first — near-zero infra cost.
 - [ ] **Sight Words** (מילים נפוצות באנגלית) — Dolch pre-primer + primer list (~40–80 words); see/read word via TTS, pick correct word from 4 choices; Ben + 1st grade. Do after English Letters.
 - [ ] **Rhyming** (חרוזים באנגלית) — hear/read a word, pick which of 4 rhymes; 1st/2nd grade; static bank.
 - [ ] **Spelling** (כתיב) — hear word via TTS, type it; open-text input; 2nd grade only.
 - [ ] **Sentence Completion** (השלמת משפטים) — fill missing word(s); static question bank (~100+, graded). Do first — simpler.
 - [ ] **Word Analogies** (יחסי מלים) — A:B :: C:? reasoning; static question bank. Do after Sentence Completion.
+- [ ] **Nikud on foreign words/names** (ניקוד) — add vowel diacritics to foreign words and names appearing in questions (trivia, capitals, word problems) so kids can read them correctly. Applies wherever transliterated names appear in Hebrew UI text.
 
 ## Trivia / General Knowledge
 
 ### Shipped
 - **trivia** (ידע כללי) — famous people; 4-option MC; bank in `backend/generators/trivia_bank/{direct,clue}.json` seeded into `BankQuestion` table on startup; difficulty 5 (direct) / 12 (clue) / 18+ swaps in cross-bank distractors; cross-session no-repeat per kid; gated to 1st/2nd grade (2026-04-30). ~47 Q to start; expand via Ollama later.
+- **countries** (מדינות ובירות) — separate topic, 50 Hebrew Q's in `BankQuestion`, `backend/generators/countries.py`; 4-option MC with static 3 distractors per question; gated to 1st/2nd grade (2026-05-08).
 
 ### Backlog
-- [ ] **Countries & Capitals** (מדינות ובירות) — new trivia subtopic. Source bank: `countries/countries_capitals_trivia.json` (25 Hebrew Q's, types `capital_to_country` / `country_to_capital`, 4-option MC). Reuse `BankQuestion` table + existing trivia MC flow; decide whether to fold into existing `trivia` topic or split as separate topic in TopicSelect. Gate to 1st/2nd grade.
+- [ ] **Countries: dynamic distractor pool** — replace static 3 distractors per question with a pool of ~12 per question (stored in `distractors` JSON array), drawn randomly at serve time. Benefit: same question produces different wrong options each session, more variety. Implementation: (1) expand `gemini_2_capitals.json` distractors arrays from 3 → 12 entries per question, re-import; (2) change `countries.py` `generate()` to `random.sample(distractors, 3)` instead of using all. Alternative simpler approach: skip per-question distractor lists entirely — build pool from all other `correct_answer` values in the bank at runtime (zero JSON changes needed).
 
 ## Infrastructure / Cross-cutting
 
@@ -56,6 +58,7 @@ Last updated: 2026-05-07
 - **BankQuestion DB table** — generic pre-generated question bank (`bank_questions`); first consumer = trivia; reusable for sentence_completion / word_analogies (2026-04-30)
 
 ### Backlog
+- [ ] **Dark mode** — toggle in UI (button or settings page); three states: light / dark / auto. Auto mode switches by time-of-day (e.g. dark after 19:00, light after 07:00). Persist preference in `localStorage`. Implement via CSS class on `<html>` + CSS variables for colors.
 - [ ] **Live timer in session header** — currently only on Summary
 - [ ] **Real images for hebrew_letters** — replace emoji in `_WORD_BANK` (`backend/generators/hebrew_letters.py`); render `<img>` in `Session.tsx`. Candidate source: totcards.com
 - [ ] **Kid profile editor UI** — names + avatars (currently hardcoded seed)

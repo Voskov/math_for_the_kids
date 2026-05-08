@@ -77,7 +77,7 @@ interface Props {
 
 type Phase = "loading" | "answering" | "feedback" | "done";
 
-export default function Session({ kid, topic: _topic, sessionId, onDone, onBack }: Props) {
+export default function Session({ kid, topic, sessionId, onDone, onBack }: Props) {
   const [phase, setPhase] = useState<Phase>("loading");
   const [problem, setProblem] = useState<NextProblem | null>(null);
   const [answer, setAnswer] = useState("");
@@ -140,7 +140,7 @@ export default function Session({ kid, topic: _topic, sessionId, onDone, onBack 
 
   function speak(word: string) {
     const utt = new SpeechSynthesisUtterance(word);
-    utt.lang = "he-IL";
+    utt.lang = topic === "english_letters" ? "en-US" : "he-IL";
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utt);
   }
