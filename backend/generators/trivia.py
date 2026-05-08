@@ -70,4 +70,5 @@ def generate(difficulty: float, db: DBSession, kid_id: int) -> dict:
         "question": q.question,
         "answer": q.correct_answer,
         "choices": choices,
+        "wiki_url": q.wiki_url,
     }

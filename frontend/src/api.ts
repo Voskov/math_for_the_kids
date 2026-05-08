@@ -42,6 +42,7 @@ export interface NextProblem {
   done: boolean;
   choices?: string[];
   tts_word?: string;
+  wiki_url?: string;
 }
 
 export interface SubmitResult {

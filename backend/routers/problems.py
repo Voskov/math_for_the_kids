@@ -22,6 +22,7 @@ class NextProblemOut(BaseModel):
     done: bool = False
     choices: list[str] | None = None
     tts_word: str | None = None
+    wiki_url: str | None = None
 
 
 class SubmitAnswerIn(BaseModel):
@@ -180,6 +181,7 @@ def next_problem(session_id: int, db: DBSession = Depends(get_db)):
         difficulty=effective_diff,
         choices=problem_data.get("choices"),
         tts_word=sp.tts_word,
+        wiki_url=problem_data.get("wiki_url"),
     )
 
 

@@ -53,6 +53,7 @@ class BankQuestion(Base):
     correct_answer: Mapped[str] = mapped_column(String, nullable=False)
     distractors: Mapped[str] = mapped_column(String, nullable=False)  # JSON-encoded list[str]
     source_hash: Mapped[str] = mapped_column(String, unique=True, nullable=False)
+    wiki_url: Mapped[str | None] = mapped_column(String, nullable=True)
 
 
 class SessionProblem(Base):

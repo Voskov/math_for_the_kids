@@ -78,4 +78,6 @@ export const S = {
   adminNoData: "אין עדיין נתונים",
   adminCorrect: "נכון",
   adminWrong: "שגוי",
+
+  wikiLinkLabel: "ויקיפדיה",
 };

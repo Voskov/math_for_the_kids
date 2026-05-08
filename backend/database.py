@@ -21,9 +21,20 @@ def get_db():
 def init_db():
     from backend import models  # noqa: F401 — ensures models are registered
     Base.metadata.create_all(bind=engine)
+    _migrate_bank_questions()
     _seed_kids()
     _seed_trivia_bank()
     _seed_countries_bank()
+
+
+def _migrate_bank_questions():
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        try:
+            conn.execute(text("ALTER TABLE bank_questions ADD COLUMN wiki_url TEXT"))
+            conn.commit()
+        except Exception:
+            pass  # column already exists
 
 
 def _seed_kids():

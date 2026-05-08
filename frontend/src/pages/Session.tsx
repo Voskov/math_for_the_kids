@@ -222,6 +222,11 @@ export default function Session({ kid, topic, sessionId, onDone, onBack }: Props
                 <span style={styles.ttsDisplay}>{problem.question}</span>
                 <span style={styles.ttsSpeakHint}>🔊</span>
               </button>
+            ) : problem.wiki_url ? (
+              <div style={styles.questionWithWiki}>
+                <a href={problem.wiki_url} target="_blank" rel="noopener noreferrer" style={styles.wikiBtn} aria-label={S.wikiLinkLabel}>W</a>
+                <p style={{ ...styles.question, flex: 1, margin: 0 }} dir="rtl"><MathText text={problem.question} /></p>
+              </div>
             ) : (
               <p style={styles.question} dir={/[֐-׿]/.test(problem.question) ? "rtl" : "ltr"}><MathText text={problem.question} /></p>
             )}
@@ -399,6 +404,21 @@ const styles: Record<string, React.CSSProperties> = {
   },
   loading: { color: "var(--text-muted)", textAlign: "center", fontSize: 18 },
   question: { fontSize: 28, fontWeight: 600, textAlign: "center", lineHeight: 1.4 },
+  questionWithWiki: { display: "flex", alignItems: "center", gap: 10 },
+  wikiBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 28,
+    height: 28,
+    flexShrink: 0,
+    borderRadius: 4,
+    border: "1.5px solid var(--border)",
+    color: "var(--text-muted)",
+    fontSize: 13,
+    fontWeight: 700,
+    textDecoration: "none",
+  } as React.CSSProperties,
   ttsQuestion: {
     display: "flex",
     flexDirection: "column",
