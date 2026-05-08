@@ -251,7 +251,7 @@ export default function Session({ kid, topic, sessionId, onDone, onBack }: Props
                   })}
                 </div>
               ) : (
-              <div style={problem.choices.some((c) => c.length > 6) ? styles.choicesGrid : styles.choices}>
+              <div style={problem.choices.length === 4 || problem.choices.some((c) => c.length > 6) ? styles.choicesGrid : styles.choices}>
                 {problem.choices.map((c) => {
                   let bg = "var(--bg)";
                   let color: string | undefined = undefined;

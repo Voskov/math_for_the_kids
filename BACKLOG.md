@@ -2,6 +2,10 @@
 
 Last updated: 2026-05-08
 
+## UX Issues
+
+- [ ] **4-choice answers overflow row** — on narrow screens (mobile portrait), 4 MC buttons crammed in one row; last button clips. Fix: wrap to 2×2 grid when 4 choices and viewport < ~400px. Affected: clock, trivia, countries, hebrew_letters.
+
 ## Bugs (HIGH PRIORITY)
 
 - [ ] **Kids dropping levels unexpectedly** — kids report level decreases, cause unknown. Investigate `backend/adaptive.py` (−2 on wrong, demote at −16) + check level-history in admin dashboard. Repro: pull recent `KidTopicLevel` history, correlate with `SessionProblem` outcomes. Hypothesis: demote threshold too aggressive, or wrong-answer penalty stacking inside one session.
