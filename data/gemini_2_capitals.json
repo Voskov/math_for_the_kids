@@ -1,0 +1,602 @@
+[
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של צרפת?",
+    "correct_answer": "פָּרִיז",
+    "distractors": [
+      "לוֹנְדוֹן",
+      "בֶּרְלִין",
+      "רוֹמָא"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של בריטניה?",
+    "correct_answer": "לוֹנְדוֹן",
+    "distractors": [
+      "פָּרִיז",
+      "מַדְרִיד",
+      "דַבְּלִין"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של איטליה?",
+    "correct_answer": "רוֹמָא",
+    "distractors": [
+      "אָתוּנָה",
+      "ליסבון",
+      "וִינָה"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של ספרד?",
+    "correct_answer": "מַדְרִיד",
+    "distractors": [
+      "בַּרְצֵלוֹנָה",
+      "ליסבון",
+      "רוֹמָא"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של גרמניה?",
+    "correct_answer": "בֶּרְלִין",
+    "distractors": [
+      "מִינְכֶן",
+      "אַמְסְטֶרְדָּם",
+      "פְּרָאג"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של ארצות הברית?",
+    "correct_answer": "ווֹשִׁינְגְּטוֹן דִּי.סִי.",
+    "distractors": [
+      "נְיוּ יוֹרְק",
+      "לוֹס אַנְגֵּ'לֶס",
+      "אוֹטָוָה"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של יפן?",
+    "correct_answer": "טוֹקְיוֹ",
+    "distractors": [
+      "בֶּיְגִ'ינְג",
+      "סֵיאוֹל",
+      "בַּנְגְּקוֹק"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של סין?",
+    "correct_answer": "בֶּיְגִ'ינְג",
+    "distractors": [
+      "טוֹקְיוֹ",
+      "שַׁאנְגְּחַאי",
+      "הוֹנְג קוֹנְג"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של רוסיה?",
+    "correct_answer": "מוֹסְקְבָה",
+    "distractors": [
+      "קִיֶּב",
+      "וַרְשָׁה",
+      "מִינְסְק"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של מצרים?",
+    "correct_answer": "קָהִיר",
+    "distractors": [
+      "עָמָאן",
+      "בֵּירוּת",
+      "דַּמֶּשֶׂק"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של יוון?",
+    "correct_answer": "אָתוּנָה",
+    "distractors": [
+      "רוֹמָא",
+      "נִיקוֹסְיָה",
+      "אַנְקָרָה"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של הולנד?",
+    "correct_answer": "אַמְסְטֶרְדָּם",
+    "distractors": [
+      "בְּרִיסֵל",
+      "בֶּרְלִין",
+      "קוֹפֶּנְהָגֶן"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של ברזיל?",
+    "correct_answer": "בְּרָזִילְיָה",
+    "distractors": [
+      "רִיּוֹ דֶּה זָ'נֵרוֹ",
+      "סָאוֹ פָּאוּלוֹ",
+      "בּוּאֵנוֹס אַיְרֶס"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של ארגנטינה?",
+    "correct_answer": "בּוּאֵנוֹס אַיְרֶס",
+    "distractors": [
+      "סַנְטְיָאגוֹ",
+      "בְּרָזִילְיָה",
+      "לִימָה"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של טורקיה?",
+    "correct_answer": "אַנְקָרָה",
+    "distractors": [
+      "איסטנבול",
+      "אָתוּנָה",
+      "טְבִּילִיסִי"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של דרום קוריאה?",
+    "correct_answer": "סֵיאוֹל",
+    "distractors": [
+      "טוֹקְיוֹ",
+      "בֶּיְגִ'ינְג",
+      "פְּיוֹנְגְּיַאנְג"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של קנדה?",
+    "correct_answer": "אוֹטָוָה",
+    "distractors": [
+      "טוֹרוֹנְטוֹ",
+      "וַנְקוּבֶר",
+      "ווֹשִׁינְגְּטוֹן דִּי.סִי."
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של מקסיקו?",
+    "correct_answer": "מֶקְסִיקוֹ סִיטִי",
+    "distractors": [
+      "מַדְרִיד",
+      "הָוָאנָה",
+      "בּוֹגוֹטָה"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של פורטוגל?",
+    "correct_answer": "ליסבון",
+    "distractors": [
+      "מַדְרִיד",
+      "רוֹמָא",
+      "ברזיל"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של תאילנד?",
+    "correct_answer": "בַּנְגְּקוֹק",
+    "distractors": [
+      "הָאנוֹי",
+      "מָנִילָה",
+      "סינגפור"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של הודו?",
+    "correct_answer": "נְיוּ דֶּלְהִי",
+    "distractors": [
+      "מוּמְבַּאי",
+      "קוֹלְקָטָה",
+      "אִסְלָאמָאבָּאד"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של שוויץ?",
+    "correct_answer": "בֵּרְן",
+    "distractors": [
+      "צִירִיךְ",
+      "זֵ'נֵבָה",
+      "וִינָה"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של אוסטריה?",
+    "correct_answer": "וִינָה",
+    "distractors": [
+      "בֶּרְלִין",
+      "בֵּרְן",
+      "בּוּדַפֵּשְׁט"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של הונגריה?",
+    "correct_answer": "בּוּדַפֵּשְׁט",
+    "distractors": [
+      "בּוּקָרֵשְׂט",
+      "פְּרָאג",
+      "וִינָה"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של פולין?",
+    "correct_answer": "וַרְשָׁה",
+    "distractors": [
+      "קרקוב",
+      "קִיֶּב",
+      "פְּרָאג"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של צ'כיה?",
+    "correct_answer": "פְּרָאג",
+    "distractors": [
+      "בְּרָטִיסְלָאבָה",
+      "וַרְשָׁה",
+      "בּוּדַפֵּשְׁט"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של בלגיה?",
+    "correct_answer": "בְּרִיסֵל",
+    "distractors": [
+      "אַמְסְטֶרְדָּם",
+      "לוּקְסֶמְבּוּרְג",
+      "פָּרִיז"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של אירלנד?",
+    "correct_answer": "דַבְּלִין",
+    "distractors": [
+      "לוֹנְדוֹן",
+      "בֶּלְפַּסְט",
+      "אֵדִינְבּוֹרוֹ"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של דנמרק?",
+    "correct_answer": "קוֹפֶּנְהָגֶן",
+    "distractors": [
+      "אוֹסְלוֹ",
+      "סְטוֹקְהוֹלְם",
+      "הֶלְסִינְקִי"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של שוודיה?",
+    "correct_answer": "סְטוֹקְהוֹלְם",
+    "distractors": [
+      "אוֹסְלוֹ",
+      "קוֹפֶּנְהָגֶן",
+      "הֶלְסִינְקִי"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של נורווגיה?",
+    "correct_answer": "אוֹסְלוֹ",
+    "distractors": [
+      "סְטוֹקְהוֹלְם",
+      "קוֹפֶּנְהָגֶן",
+      "רֶיְקְיָאוִיק"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של פינלנד?",
+    "correct_answer": "הֶלְסִינְקִי",
+    "distractors": [
+      "טָאלִין",
+      "אוֹסְלוֹ",
+      "רִיגָה"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של אוסטרליה?",
+    "correct_answer": "קַנְבֵּרָה",
+    "distractors": [
+      "סִידְנִי",
+      "מֶלְבּוֹרְן",
+      "וֵלִינְגְּטוֹן"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של ניו זילנד?",
+    "correct_answer": "וֵלִינְגְּטוֹן",
+    "distractors": [
+      "אוֹקְלֵנְד",
+      "סִידְנִי",
+      "קַנְבֵּרָה"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של דרום אפריקה?",
+    "correct_answer": "פְּרֵטוֹרְיָה",
+    "distractors": [
+      "קֵיפְּטָאוּן",
+      "יוּהָנֶסְבּורְג",
+      "נַיְרוֹבִּי"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של אוקראינה?",
+    "correct_answer": "קִיֶּב",
+    "distractors": [
+      "מוֹסְקְבָה",
+      "וַרְשָׁה",
+      "מִינְסְק"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של רומניה?",
+    "correct_answer": "בּוּקָרֵשְׂט",
+    "distractors": [
+      "בּוּדַפֵּשְׁט",
+      "סוֹפְיָה",
+      "בלגרד"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של בולגריה?",
+    "correct_answer": "סוֹפְיָה",
+    "distractors": [
+      "בּוּקָרֵשְׂט",
+      "סקופיה",
+      "טירנה"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של קולומביה?",
+    "correct_answer": "בּוֹגוֹטָה",
+    "distractors": [
+      "לִימָה",
+      "קָרָאקָס",
+      "קִיטוֹ"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של צ'ילה?",
+    "correct_answer": "סַנְטְיָאגוֹ",
+    "distractors": [
+      "לִימָה",
+      "בּוּאֵנוֹס אַיְרֶס",
+      "לָה פָּאס"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של פרו?",
+    "correct_answer": "לִימָה",
+    "distractors": [
+      "סַנְטְיָאגוֹ",
+      "בּוֹגוֹטָה",
+      "אָסוּנְסְיוֹן"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של וייטנאם?",
+    "correct_answer": "הָאנוֹי",
+    "distractors": [
+      "הוֹ צִ'י מִין סִיטִי",
+      "בַּנְגְּקוֹק",
+      "פְּנוֹם פֵּן"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של הפיליפינים?",
+    "correct_answer": "מָנִילָה",
+    "distractors": [
+      "גָ'קַרְטָה",
+      "בַּנְגְּקוֹק",
+      "קוּאָלָה לוּמְפּוּר"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של מרוקו?",
+    "correct_answer": "רַבָּאט",
+    "distractors": [
+      "קָזַבְּלַנְקָה",
+      "מָרָקֶשׁ",
+      "אַלְגִ'יר"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של קובה?",
+    "correct_answer": "הָוָאנָה",
+    "distractors": [
+      "סַן חוּאָן",
+      "סַנְטוֹ דוֹמִינְגוֹ",
+      "מֶקְסִיקוֹ סִיטִי"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של איסלנד?",
+    "correct_answer": "רֶיְקְיָאוִיק",
+    "distractors": [
+      "אוֹסְלוֹ",
+      "הֶלְסִינְקִי",
+      "קוֹפֶּנְהָגֶן"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של ירדן?",
+    "correct_answer": "עָמָאן",
+    "distractors": [
+      "דַּמֶּשֶׂק",
+      "בֵּירוּת",
+      "בַּגְדָּד"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של לבנון?",
+    "correct_answer": "בֵּירוּת",
+    "distractors": [
+      "עָמָאן",
+      "דַּמֶּשֶׂק",
+      "נִיקוֹסְיָה"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של סעודיה?",
+    "correct_answer": "רִיאָד",
+    "distractors": [
+      "גָ'דָה",
+      "מַכָּה",
+      "דּוּבַּאי"
+    ]
+  },
+  {
+    "topic": "countries",
+    "subtype": "capital_to_country",
+    "difficulty": 10,
+    "question": "מהי עיר הבירה של ישראל?",
+    "correct_answer": "ירושלים",
+    "distractors": [
+      "תל אביב",
+      "חיפה",
+      "עָמָאן"
+    ]
+  }
+]
