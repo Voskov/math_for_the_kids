@@ -2,15 +2,12 @@
 Hebrew letter recognition for Ben (preschool).
 
 Difficulty map:
-  1–2   א ב ג — 3 choices, Type A only
-  3–4   + ד ה — 4 choices, mix A / C
-  5–10  + more letters — mix A / C
-  11–16 + more letters — mix A / C / D
-  17–20 all 22 letters — mix A / B / C / D
+  1–10  growing letter pool — 3–4 choices, Type A only
+  11–16 + more letters — mix A / D
+  17–20 all 22 letters — mix A / B / D
 
-Type A: emoji → pick letter       (question=emoji, tts_word=Hebrew word)
-Type B: letter → pick emoji       (question=letter, tts_word=letter name)
-Type C: letter name → pick letter (question=letter name, tts_word=letter name)
+Type A: emoji → pick letter             (question=emoji, tts_word=Hebrew word)
+Type B: letter → pick emoji            (question=letter, tts_word=letter name)
 Type D: Hebrew word → pick first letter (question=word, tts_word=word)
 """
 import random
@@ -89,16 +86,12 @@ def generate(difficulty: float) -> dict:
     word, emoji = random.choice(_WORD_BANK[letter])
     dist_letters = _distractors(letter, pool, choice_count - 1, d)
 
-    if d <= 2:
+    if d <= 10:
         qtype = "A"
-    elif d <= 6:
-        qtype = random.choice(["A", "A", "C"])
-    elif d <= 10:
-        qtype = random.choice(["A", "C"])
     elif d <= 16:
-        qtype = random.choice(["A", "C", "D"])
+        qtype = random.choice(["A", "D"])
     else:
-        qtype = random.choice(["A", "B", "C", "D"])
+        qtype = random.choice(["A", "B", "D"])
 
     if qtype == "A":
         choices = [letter] + dist_letters
@@ -110,12 +103,6 @@ def generate(difficulty: float) -> dict:
         choices = [emoji] + dist_emojis
         random.shuffle(choices)
         return {"question": letter, "answer": emoji, "choices": choices, "tts_word": _LETTER_NAMES[letter]}
-
-    if qtype == "C":
-        name = _LETTER_NAMES[letter]
-        choices = [letter] + dist_letters
-        random.shuffle(choices)
-        return {"question": name, "answer": letter, "choices": choices, "tts_word": name}
 
     # Type D: Hebrew word → pick first letter
     choices = [letter] + dist_letters
