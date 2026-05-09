@@ -5,6 +5,7 @@ import Session from "./pages/Session";
 import Summary from "./pages/Summary";
 import Admin from "./pages/Admin";
 import type { Kid } from "./api";
+import { toggleTheme, isDark } from "./theme";
 
 export type Page =
   | { name: "kidSelect" }
@@ -15,6 +16,7 @@ export type Page =
 
 export default function App() {
   const [page, setPage] = useState<Page>({ name: "kidSelect" });
+  const [dark, setDark] = useState(isDark);
 
   function navigate(next: Page) {
     history.pushState(next, "");
@@ -32,6 +34,28 @@ export default function App() {
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px" }}>
+      <button
+        onClick={() => setDark(toggleTheme())}
+        title={dark ? "מצב יום" : "מצב לילה"}
+        style={{
+          position: "fixed",
+          top: 16,
+          insetInlineEnd: 16,
+          width: 40,
+          height: 40,
+          borderRadius: "50%",
+          background: "var(--surface)",
+          border: "1px solid var(--border)",
+          boxShadow: "var(--shadow)",
+          fontSize: 20,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 100,
+        }}
+      >
+        {dark ? "☀️" : "🌙"}
+      </button>
       {page.name === "kidSelect" && (
         <KidSelect
           onSelect={(kid) => navigate({ name: "topicSelect", kid })}

@@ -18,7 +18,7 @@ export default function Clock({ hour, minute, size = 200 }: ClockProps) {
         textAnchor="middle"
         fontSize="11"
         fontWeight="600"
-        fill="#222"
+        fill="var(--text)"
       >
         {i}
       </text>
@@ -35,7 +35,7 @@ export default function Clock({ hour, minute, size = 200 }: ClockProps) {
         y1={long ? -46 : -47}
         x2="0"
         y2={long ? -49 : -49}
-        stroke="#333"
+        stroke="var(--text-muted)"
         strokeWidth={long ? 1.5 : 0.5}
         transform={`rotate(${a})`}
       />
@@ -43,7 +43,7 @@ export default function Clock({ hour, minute, size = 200 }: ClockProps) {
   }
   return (
     <svg viewBox="-50 -50 100 100" width={size} height={size} style={{ display: "block" }}>
-      <circle r="49" fill="#fff" stroke="#222" strokeWidth="2" />
+      <circle r="49" fill="var(--surface)" stroke="var(--text)" strokeWidth="2" />
       {ticks}
       {numbers}
       <line
@@ -51,7 +51,7 @@ export default function Clock({ hour, minute, size = 200 }: ClockProps) {
         y1="4"
         x2="0"
         y2="-26"
-        stroke="#222"
+        stroke="var(--text)"
         strokeWidth="3.5"
         strokeLinecap="round"
         transform={`rotate(${hrAngle})`}
@@ -61,12 +61,12 @@ export default function Clock({ hour, minute, size = 200 }: ClockProps) {
         y1="6"
         x2="0"
         y2="-40"
-        stroke="#444"
+        stroke="var(--text-muted)"
         strokeWidth="2"
         strokeLinecap="round"
         transform={`rotate(${minAngle})`}
       />
-      <circle r="2.5" fill="#222" />
+      <circle r="2.5" fill="var(--text)" />
     </svg>
   );
 }
