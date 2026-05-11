@@ -3,7 +3,8 @@ Tier 1 arithmetic problem generator.
 Produces problems algorithmically — no storage, no AI.
 
 Difficulty map:
-  1–2   single-digit add/subtract
+  1     numbers 1–5, addition only (preschool)
+  2     single-digit add/subtract (1–9)
   3–4   two-digit add/subtract
   5–6   multiplication/division (tables up to 10)
   7–8   three-digit add/subtract; two-digit × single-digit
@@ -22,6 +23,8 @@ from fractions import Fraction
 def generate(difficulty: float) -> dict:
     """Return {"question": str, "answer": str, "difficulty": float}"""
     d = int(difficulty)
+    if d <= 1:
+        return _add_tiny(difficulty)
     if d <= 2:
         return _add_sub_single(difficulty)
     if d <= 4:
@@ -48,6 +51,11 @@ def generate(difficulty: float) -> dict:
 def _q(text: str, answer) -> dict:
     q = text if text.endswith("?") else f"{text} = ?"
     return {"question": q, "answer": str(answer)}
+
+
+def _add_tiny(difficulty: float) -> dict:
+    a, b = random.randint(1, 4), random.randint(1, 4)
+    return _q(f"{a} + {b}", a + b)
 
 
 def _add_sub_single(difficulty: float) -> dict:
