@@ -21,7 +21,7 @@ const TOPICS: Topic[] = [
   { id: "clock", label: S.topicClock, desc: S.topicClockDesc, emoji: "🕐", category: "trivia" },
   { id: "powers", label: S.topicPowers, desc: S.topicPowersDesc, emoji: "xⁿ", category: "math", forGrades: ["1st", "2nd"] },
   { id: "hebrew_letters", label: S.topicHebrewLetters, desc: S.topicHebrewLettersDesc, emoji: "🔤", category: "language", forGrades: ["preschool"] },
-  { id: "english_letters", label: S.topicEnglishLetters, desc: S.topicEnglishLettersDesc, emoji: "🔡", category: "language", forGrades: ["1st", "2nd"] },
+  { id: "english_letters", label: S.topicEnglishLetters, desc: S.topicEnglishLettersDesc, emoji: "🔡", category: "language", forGrades: ["preschool"] },
   { id: "trivia", label: S.topicTrivia, desc: S.topicTriviaDesc, emoji: "🌍", category: "trivia", forGrades: ["1st", "2nd"] },
   { id: "countries", label: S.topicCountries, desc: S.topicCountriesDesc, emoji: "🗺️", category: "trivia", forGrades: ["1st", "2nd"] },
 ];
