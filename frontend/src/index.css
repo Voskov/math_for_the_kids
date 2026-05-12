@@ -49,6 +49,7 @@ html, body {
 
 button {
   font-family: inherit;
+  color: inherit;
   cursor: pointer;
   border: none;
   outline: none;
@@ -59,6 +60,7 @@ button:active {
   transform: scale(0.97);
 }
 
-input {
+input, select {
   font-family: inherit;
+  color: inherit;
 }
