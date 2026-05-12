@@ -259,7 +259,7 @@ export default function Session({ kid, topic, sessionId, onDone, onBack }: Props
               <div style={problem.choices.length === 4 || problem.choices.some((c) => c.length > 6) ? styles.choicesGrid : styles.choices}>
                 {problem.choices.map((c) => {
                   let bg = "var(--bg)";
-                  let color: string | undefined = undefined;
+                  let color = "var(--text)";
                   if (phase === "feedback" && result) {
                     if (c === answer && result.is_correct) { bg = "var(--success)"; color = "#fff"; }
                     else if (c === answer && !result.is_correct) { bg = "var(--error)"; color = "#fff"; }
