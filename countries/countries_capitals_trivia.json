@@ -1,7 +1,7 @@
 [
   {
     "type": "capital_to_country",
-    "question": "של איזה מדינה היא עיר הבירה ליסבון?",
+    "question": "של איזה מדינה היא עיר הבירה לִיסְבּוֹן?",
     "correct_answer": "פורטוגל",
     "distractors": [
       "ספרד",
@@ -12,16 +12,16 @@
   {
     "type": "country_to_capital",
     "question": "מהי עיר הבירה של יפן?",
-    "correct_answer": "טוקיו",
+    "correct_answer": "טוֹקְיוֹ",
     "distractors": [
-      "קיוטו",
-      "אוסקה",
-      "סיאול"
+      "קִיוֹטוֹ",
+      "אוֹסָקָה",
+      "סֵיאוֹל"
     ]
   },
   {
     "type": "capital_to_country",
-    "question": "של איזה מדינה היא עיר הבירה הלסינקי?",
+    "question": "של איזה מדינה היא עיר הבירה הֶלְסִינְקִי?",
     "correct_answer": "פינלנד",
     "distractors": [
       "נורווגיה",
@@ -32,16 +32,16 @@
   {
     "type": "country_to_capital",
     "question": "מהי עיר הבירה של צרפת?",
-    "correct_answer": "פריז",
+    "correct_answer": "פָּרִיז",
     "distractors": [
-      "ליון",
-      "מרסיי",
-      "בורדו"
+      "לְיוֹן",
+      "מַרְסֵי",
+      "בּוֹרְדּוֹ"
     ]
   },
   {
     "type": "capital_to_country",
-    "question": "של איזה מדינה היא עיר הבירה אוטווה?",
+    "question": "של איזה מדינה היא עיר הבירה אוֹטָוָה?",
     "correct_answer": "קנדה",
     "distractors": [
       "ארצות הברית",
@@ -52,16 +52,16 @@
   {
     "type": "country_to_capital",
     "question": "מהי עיר הבירה של גרמניה?",
-    "correct_answer": "ברלין",
+    "correct_answer": "בֶּרְלִין",
     "distractors": [
-      "מינכן",
-      "המבורג",
-      "פרנקפורט"
+      "מִינְכֶן",
+      "הַמְבּוּרְג",
+      "פְרַנְקְפוּרְט"
     ]
   },
   {
     "type": "capital_to_country",
-    "question": "של איזה מדינה היא עיר הבירה בנגקוק?",
+    "question": "של איזה מדינה היא עיר הבירה בַּנְגְּקוֹק?",
     "correct_answer": "תאילנד",
     "distractors": [
       "וייטנאם",
@@ -72,16 +72,16 @@
   {
     "type": "country_to_capital",
     "question": "מהי עיר הבירה של מצרים?",
-    "correct_answer": "קהיר",
+    "correct_answer": "קָהִיר",
     "distractors": [
-      "אלכסנדריה",
-      "לוקסור",
-      "עמאן"
+      "אָלֶכְּסַנְדְּרִיָּה",
+      "לוּקְסוֹר",
+      "עָמָאן"
     ]
   },
   {
     "type": "capital_to_country",
-    "question": "של איזה מדינה היא עיר הבירה בואנוס איירס?",
+    "question": "של איזה מדינה היא עיר הבירה בּוּאֵנוֹס אַיְרֶס?",
     "correct_answer": "ארגנטינה",
     "distractors": [
       "ברזיל",
@@ -92,16 +92,16 @@
   {
     "type": "country_to_capital",
     "question": "מהי עיר הבירה של איטליה?",
-    "correct_answer": "רומא",
+    "correct_answer": "רוֹמָא",
     "distractors": [
-      "מילאנו",
-      "ונציה",
-      "פירנצה"
+      "מִילָאנוֹ",
+      "וֵנֶצְיָה",
+      "פִּירֶנְצֶה"
     ]
   },
   {
     "type": "capital_to_country",
-    "question": "של איזה מדינה היא עיר הבירה סיאול?",
+    "question": "של איזה מדינה היא עיר הבירה סֵיאוֹל?",
     "correct_answer": "דרום קוריאה",
     "distractors": [
       "סין",
@@ -112,36 +112,36 @@
   {
     "type": "country_to_capital",
     "question": "מהי עיר הבירה של רוסיה?",
-    "correct_answer": "מוסקבה",
+    "correct_answer": "מוֹסְקְבָה",
     "distractors": [
-      "סנט פטרסבורג",
-      "קייב",
-      "ורשה"
+      "סַנְט פֵּטֶרְסְבּוּרג",
+      "קִיֶּב",
+      "וַרְשָׁה"
     ]
   },
   {
     "type": "capital_to_country",
-    "question": "של איזה מדינה היא עיר הבירה קנברה?",
+    "question": "של איזה מדינה היא עיר הבירה קַנְבֵּרָה?",
     "correct_answer": "אוסטרליה",
     "distractors": [
       "ניו זילנד",
       "פיג'י",
-      "סידני"
+      "סִידְנִי"
     ]
   },
   {
     "type": "country_to_capital",
     "question": "מהי עיר הבירה של טורקיה?",
-    "correct_answer": "אנקרה",
+    "correct_answer": "אַנְקָרָה",
     "distractors": [
-      "איסטנבול",
-      "איזמיר",
-      "אנטליה"
+      "אִיסְטַנְבּוּל",
+      "אִיזְמִיר",
+      "אַנְטָלֶיהָ"
     ]
   },
   {
     "type": "capital_to_country",
-    "question": "של איזה מדינה היא עיר הבירה דבלין?",
+    "question": "של איזה מדינה היא עיר הבירה דַבְּלִין?",
     "correct_answer": "אירלנד",
     "distractors": [
       "סקוטלנד",
@@ -152,16 +152,16 @@
   {
     "type": "country_to_capital",
     "question": "מהי עיר הבירה של יוון?",
-    "correct_answer": "אתונה",
+    "correct_answer": "אָתוּנָה",
     "distractors": [
-      "סלוניקי",
-      "כרתים",
-      "ניקוסיה"
+      "סָלוֹנִיקִי",
+      "כְּרֵתִים",
+      "נִיקוֹסְיָה"
     ]
   },
   {
     "type": "capital_to_country",
-    "question": "של איזה מדינה היא עיר הבירה ניו דלהי?",
+    "question": "של איזה מדינה היא עיר הבירה נְיוּ דֶּלְהִי?",
     "correct_answer": "הודו",
     "distractors": [
       "פקיסטן",
@@ -172,16 +172,16 @@
   {
     "type": "country_to_capital",
     "question": "מהי עיר הבירה של סין?",
-    "correct_answer": "בייג'ינג",
+    "correct_answer": "בֶּיְגִ'ינְג",
     "distractors": [
-      "שנגחאי",
-      "הונג קונג",
-      "טוקיו"
+      "שַׁנְגְּחַאי",
+      "הוֹנְג קוֹנְג",
+      "טוֹקְיוֹ"
     ]
   },
   {
     "type": "capital_to_country",
-    "question": "של איזה מדינה היא עיר הבירה ניירובי?",
+    "question": "של איזה מדינה היא עיר הבירה נַיְרוֹבִּי?",
     "correct_answer": "קניה",
     "distractors": [
       "אתיופיה",
@@ -192,16 +192,16 @@
   {
     "type": "country_to_capital",
     "question": "מהי עיר הבירה של ספרד?",
-    "correct_answer": "מדריד",
+    "correct_answer": "מַדְרִיד",
     "distractors": [
-      "ברצלונה",
-      "ולנסיה",
-      "סביליה"
+      "בַּרְצֵלוֹנָה",
+      "וָלֶנְסִיָּה",
+      "סֵבִילְיָה"
     ]
   },
   {
     "type": "capital_to_country",
-    "question": "של איזה מדינה היא עיר הבירה אמסטרדם?",
+    "question": "של איזה מדינה היא עיר הבירה אַמְסְטֶרְדָּם?",
     "correct_answer": "הולנד",
     "distractors": [
       "בלגיה",
@@ -212,16 +212,16 @@
   {
     "type": "country_to_capital",
     "question": "מהי עיר הבירה של פולין?",
-    "correct_answer": "ורשה",
+    "correct_answer": "וַרְשָׁה",
     "distractors": [
-      "קרקוב",
-      "גדנסק",
-      "פראג"
+      "קְרָקוֹב",
+      "גְּדַנְסְק",
+      "פְּרָאג"
     ]
   },
   {
     "type": "capital_to_country",
-    "question": "של איזה מדינה היא עיר הבירה בוגוטה?",
+    "question": "של איזה מדינה היא עיר הבירה בּוֹגוֹטָה?",
     "correct_answer": "קולומביה",
     "distractors": [
       "פרו",
@@ -232,16 +232,16 @@
   {
     "type": "country_to_capital",
     "question": "מהי עיר הבירה של שווייץ?",
-    "correct_answer": "ברן",
+    "correct_answer": "בֵּרְן",
     "distractors": [
-      "ציריך",
-      "ז'נבה",
-      "לוזאן"
+      "צִירִיךְ",
+      "זֵ'נֵבָה",
+      "לוֹזָאן"
     ]
   },
   {
     "type": "capital_to_country",
-    "question": "של איזה מדינה היא עיר הבירה מנילה?",
+    "question": "של איזה מדינה היא עיר הבירה מָנִילָה?",
     "correct_answer": "פיליפינים",
     "distractors": [
       "וייטנאם",

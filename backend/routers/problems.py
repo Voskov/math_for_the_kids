@@ -1,12 +1,14 @@
+import re
 import random
 from datetime import datetime
 from fractions import Fraction
 from loguru import logger
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
+from sqlalchemy import select
 from sqlalchemy.orm import Session as DBSession
 from backend.database import get_db
-from backend.models import KidTopicLevel, Session, SessionProblem
+from backend.models import BankQuestion, KidTopicLevel, Session, SessionProblem
 from backend.adaptive import MAX_DIFFICULTY, MIN_DIFFICULTY, update_level
 from backend import generators
 
@@ -37,6 +39,7 @@ class SubmitAnswerOut(BaseModel):
     new_difficulty: float
     session_done: bool
     session_id: int
+    wrong_answer_hint: str | None = None
 
 
 def _get_generator(topic: str):
@@ -71,6 +74,21 @@ def _get_generator(topic: str):
         from backend.generators import countries
         return countries.generate
     raise ValueError(f"Unknown topic: {topic}")
+
+
+def _countries_wrong_hint(db: DBSession, kid_answer: str) -> str | None:
+    """Return Hebrew hint like 'Seoul is capital of South Korea' for a wrong capital choice."""
+    row = db.execute(
+        select(BankQuestion.question)
+        .where(BankQuestion.topic == "countries", BankQuestion.correct_answer == kid_answer)
+    ).scalar()
+    if not row:
+        return None
+    m = re.search(r'של (.+?)\?', row)
+    if not m:
+        return None
+    country = m.group(1).strip()
+    return f"{kid_answer} היא בירת {country}"
 
 
 def _answers_match(kid: str, correct: str) -> bool:
@@ -195,6 +213,11 @@ def submit_answer(body: SubmitAnswerIn, db: DBSession = Depends(get_db)):
 
     kid_answer = body.kid_answer.strip()
     is_correct = _answers_match(kid_answer, sp.correct_answer)
+    wrong_hint = None
+    if not is_correct:
+        session_for_hint = db.get(Session, sp.session_id)
+        if session_for_hint and session_for_hint.topic == "countries":
+            wrong_hint = _countries_wrong_hint(db, kid_answer)
     sp.kid_answer = kid_answer
     sp.is_correct = is_correct
     sp.time_taken_s = body.time_taken_s
@@ -237,4 +260,5 @@ def submit_answer(body: SubmitAnswerIn, db: DBSession = Depends(get_db)):
         new_difficulty=new_diff,
         session_done=session_done,
         session_id=sp.session_id,
+        wrong_answer_hint=wrong_hint,
     )

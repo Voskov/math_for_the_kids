@@ -332,6 +332,9 @@ export default function Session({ kid, topic, sessionId, onDone, onBack }: Props
                 >
                   {result.is_correct ? S.correct : <MathText text={S.wrong(result.correct_answer)} />}
                 </p>
+                {!result.is_correct && result.wrong_answer_hint && (
+                  <p style={styles.wrongHint} dir="rtl">{result.wrong_answer_hint}</p>
+                )}
                 {levelChange && <p style={styles.levelChange}>{levelChange}</p>}
                 {!result.session_done && (
                   <button style={styles.nextBtn} onClick={loadNext}>
@@ -489,6 +492,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 22,
     fontWeight: 600,
     background: "var(--bg)",
+    color: "var(--text)",
     border: "2px solid var(--border)",
     borderRadius: 10,
     cursor: "pointer",
@@ -512,6 +516,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   feedback: { display: "flex", flexDirection: "column", gap: 12, alignItems: "center" },
   feedbackText: { fontSize: 20, fontWeight: 600 },
+  wrongHint: { fontSize: 15, color: "var(--text-muted)", textAlign: "center" },
   levelChange: { fontSize: 14, color: "var(--text-muted)" },
   nextBtn: {
     padding: "10px 24px",

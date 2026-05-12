@@ -51,6 +51,7 @@ export interface SubmitResult {
   new_difficulty: number;
   session_done: boolean;
   session_id: number;
+  wrong_answer_hint?: string;
 }
 
 export interface SummaryProblem {

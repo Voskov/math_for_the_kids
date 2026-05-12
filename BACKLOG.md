@@ -1,6 +1,6 @@
 # Backlog
 
-Last updated: 2026-05-08
+Last updated: 2026-05-12
 
 ## UX Issues
 
@@ -22,10 +22,12 @@ Last updated: 2026-05-08
 - **fractions** (שברים) — recognition, comparison, arithmetic, difficulty 1–20
 - **powers** (חזקות) — squares, cubes, powers of 10, mixed expr, reverse `?²=n`, higher exponents; gated to 1st/2nd grade (2026-04-29)
 
+### Shipped
+- **Clock Reading** (שעון) — analog clock SVG; 6 problem types (read hour, read minute, read full, pick clock, add time, elapsed time); difficulty 1–20; MC UI
+
 ### Backlog
 - [ ] **Comparisons & Ordering** (השוואה וסדר) — sort numbers smallest→largest; needs multi-input or drag-and-drop UI
-- [ ] **Clock Reading** (שעון) — analog clock face; needs SVG clock rendering
-- [ ] **Geometry** — area, perimeter, angles
+- [ ] **Geometry** (גיאומטריה) — single topic card, difficulty bands: shapes recognition (1–5), perimeter (6–10), area (11–15), angles (16–18), mixed (19–20); inline SVG diagrams for shapes; MC answers; gated 1st/2nd grade. Generator uses clear internal type buckets so splitting into sub-topics later is easy.
 - [ ] **More word problem templates (Tier 2)** — Hebrew templates with variable slots
 
 ## Language
@@ -49,6 +51,7 @@ Last updated: 2026-05-08
 - **countries** (מדינות ובירות) — separate topic, 50 Hebrew Q's in `BankQuestion`, `backend/generators/countries.py`; 4-option MC with static 3 distractors per question; gated to 1st/2nd grade (2026-05-08).
 
 ### Backlog
+- [x] **Countries: add nikud to city names** (2026-05-12) — `countries/countries_capitals_trivia.json` (actual DB source) has no nikud on city names. `data/nikud_done.txt` (SECTION: places) has the mapping for most cities. Gaps needing nikud added: ליסבון, קיוטו, אוסקה, and distractor cities ליון, מרסיי, בורדו, המבורג, פרנקפורט, מילאנו, ונציה, פירנצה, אלכסנדריה, לוקסור, קרקוב, גדנסק, ולנסיה, סביליה, לוזאן. Plan: (1) generate missing nikud, append to `nikud_done.txt`; (2) apply mapping to all `correct_answer`, `distractors`, and city names inside `question` text; (3) re-seed DB. Note: `data/gemini_2_capitals.json` already has nikud but is a different larger dataset — consider replacing `countries_capitals_trivia.json` with it entirely.
 - [ ] **Countries: dynamic distractor pool** — replace static 3 distractors per question with a pool of ~12 per question (stored in `distractors` JSON array), drawn randomly at serve time. Benefit: same question produces different wrong options each session, more variety. Implementation: (1) expand `gemini_2_capitals.json` distractors arrays from 3 → 12 entries per question, re-import; (2) change `countries.py` `generate()` to `random.sample(distractors, 3)` instead of using all. Alternative simpler approach: skip per-question distractor lists entirely — build pool from all other `correct_answer` values in the bank at runtime (zero JSON changes needed).
 
 ## Infrastructure / Cross-cutting
