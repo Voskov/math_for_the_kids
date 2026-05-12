@@ -478,6 +478,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 22,
     fontWeight: 700,
     background: "var(--bg)",
+    color: "var(--text)",
     border: "2px solid var(--border)",
     borderRadius: 10,
     cursor: "pointer",
