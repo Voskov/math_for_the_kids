@@ -38,7 +38,7 @@ export default function KidSelect({ onSelect, onAdmin }: Props) {
             <span style={styles.avatar}>{kid.avatar_emoji}</span>
             <span style={styles.name}>{kid.name}</span>
             <span style={styles.level}>
-              {S.level}: {Math.floor(kid.levels.find((l) => l.topic === "arithmetic")?.difficulty_level ?? 0)}
+              {S.level}: {kid.levels.length ? Math.floor(kid.levels.reduce((sum, l) => sum + l.difficulty_level, 0) / kid.levels.length) : 0}
             </span>
           </button>
         ))}
