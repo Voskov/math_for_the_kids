@@ -65,7 +65,7 @@ Last updated: 2026-05-12
 - **BankQuestion DB table** — generic pre-generated question bank (`bank_questions`); first consumer = trivia; reusable for sentence_completion / word_analogies (2026-04-30)
 
 ### Backlog
-- **Dark mode** (2026-05-09) — `html.dark` CSS vars; auto by time-of-day (dark 19:00–07:00); toggle button (☀️/🌙) fixed top corner; persists in `localStorage`.
+- [x] **Dark mode** (2026-05-09) — `html.dark` CSS vars; auto by time-of-day (dark 19:00–07:00); toggle button (☀️/🌙) fixed top corner; persists in `localStorage`.
 - [ ] **Live timer in session header** — currently only on Summary
 - [ ] **Real images for hebrew_letters** — replace emoji in `_WORD_BANK` (`backend/generators/hebrew_letters.py`); render `<img>` in `Session.tsx`. Candidate source: totcards.com
 - [ ] **Kid profile editor UI** — names + avatars (currently hardcoded seed)

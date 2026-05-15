@@ -58,6 +58,9 @@ export default function Summary({ sessionId, durationSeconds, onPlayAgain, onHom
             {!p.is_correct && (
               <span style={styles.correctAns}>({p.correct_answer})</span>
             )}
+            {p.time_taken_s != null && (
+              <span style={styles.timeTaken}>{p.time_taken_s.toFixed(1)}s</span>
+            )}
           </div>
         ))}
       </div>
@@ -115,6 +118,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   problemQ: { flex: 1, direction: "ltr", fontFamily: "monospace", fontSize: 16 },
   correctAns: { fontSize: 13, color: "var(--text-muted)" },
+  timeTaken: { fontSize: 12, color: "var(--text-muted)", marginLeft: "auto" },
   actions: { display: "flex", gap: 12, justifyContent: "center" },
   primaryBtn: {
     padding: "12px 28px",
