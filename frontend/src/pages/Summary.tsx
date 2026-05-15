@@ -51,15 +51,15 @@ export default function Summary({ sessionId, durationSeconds, onPlayAgain, onHom
               borderRight: `4px solid ${p.is_correct ? "var(--success)" : "var(--error)"}`,
             }}
           >
+            {p.time_taken_s != null && (
+              <span style={styles.timeTaken}>{p.time_taken_s.toFixed(1)}s</span>
+            )}
             <span style={styles.problemQ}>{p.question_text}</span>
             <span style={{ color: p.is_correct ? "var(--success)" : "var(--error)", fontWeight: 600 }}>
               {p.kid_answer ?? "—"}
             </span>
             {!p.is_correct && (
               <span style={styles.correctAns}>({p.correct_answer})</span>
-            )}
-            {p.time_taken_s != null && (
-              <span style={styles.timeTaken}>{p.time_taken_s.toFixed(1)}s</span>
             )}
           </div>
         ))}
@@ -118,7 +118,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   problemQ: { flex: 1, direction: "ltr", fontFamily: "monospace", fontSize: 16 },
   correctAns: { fontSize: 13, color: "var(--text-muted)" },
-  timeTaken: { fontSize: 12, color: "var(--text-muted)", marginLeft: "auto" },
+  timeTaken: { fontSize: 12, color: "var(--text-muted)" },
   actions: { display: "flex", gap: 12, justifyContent: "center" },
   primaryBtn: {
     padding: "12px 28px",
