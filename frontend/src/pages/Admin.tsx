@@ -505,7 +505,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 18,
     padding: "4px 8px",
     cursor: "pointer",
-    opacity: 0.4,
+    opacity: 0.65,
   },
   specialToggleOn: { opacity: 1, borderColor: "var(--primary)" },
   levelInput: {
