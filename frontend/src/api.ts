@@ -23,6 +23,7 @@ export interface Kid {
   name: string;
   avatar_emoji: string;
   starting_grade: string;
+  is_special: boolean;
   levels: TopicLevel[];
 }
 
@@ -110,7 +111,7 @@ export interface HistoryPoint {
 }
 
 export const api = {
-  getKids: () => req<Kid[]>("/kids/"),
+  getKids: (includeSpecial = false) => req<Kid[]>(`/kids/${includeSpecial ? "?include_special=true" : ""}`),
   getKid: (id: number) => req<Kid>(`/kids/${id}`),
 
   startSession: (kid_id: number, topic: string) =>

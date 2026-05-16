@@ -22,9 +22,21 @@ def init_db():
     from backend import models  # noqa: F401 — ensures models are registered
     Base.metadata.create_all(bind=engine)
     _migrate_bank_questions()
+    _migrate_kids()
     _seed_kids()
+    _seed_special_kids()
     _seed_trivia_bank()
     _seed_countries_bank()
+
+
+def _migrate_kids():
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        try:
+            conn.execute(text("ALTER TABLE kids ADD COLUMN is_special INTEGER NOT NULL DEFAULT 0"))
+            conn.commit()
+        except Exception:
+            pass  # column already exists
 
 
 def _migrate_bank_questions():
@@ -58,6 +70,20 @@ def _seed_kids():
                     difficulty_level=default_levels[kid.starting_grade],
                     score_accumulator=0.0,
                 ))
+        db.commit()
+
+
+def _seed_special_kids():
+    from backend.models import Kid
+    special = [
+        {"name": "בדיקה", "avatar_emoji": "🧪", "starting_grade": "2nd"},
+        {"name": "אורח",  "avatar_emoji": "👤", "starting_grade": "2nd"},
+    ]
+    with Session(engine) as db:
+        for spec in special:
+            if not db.query(Kid).filter_by(name=spec["name"]).first():
+                db.add(Kid(name=spec["name"], avatar_emoji=spec["avatar_emoji"],
+                           starting_grade=spec["starting_grade"], is_special=True))
         db.commit()
 
 

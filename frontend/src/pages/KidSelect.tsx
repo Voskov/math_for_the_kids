@@ -12,7 +12,8 @@ export default function KidSelect({ onSelect, onAdmin }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    api.getKids().then(setKids).catch(() => setError("לא ניתן להתחבר לשרת"));
+    const includeSpecial = sessionStorage.getItem("showSpecialKids") === "1";
+    api.getKids(includeSpecial).then(setKids).catch(() => setError("לא ניתן להתחבר לשרת"));
   }, []);
 
   return (

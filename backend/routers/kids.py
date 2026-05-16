@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from backend.database import get_db
@@ -20,14 +20,18 @@ class KidOut(BaseModel):
     name: str
     avatar_emoji: str
     starting_grade: str
+    is_special: bool
     levels: list[TopicLevelOut]
 
     model_config = {"from_attributes": True}
 
 
 @router.get("/", response_model=list[KidOut])
-def list_kids(db: Session = Depends(get_db)):
-    return db.query(Kid).all()
+def list_kids(include_special: bool = Query(False), db: Session = Depends(get_db)):
+    q = db.query(Kid)
+    if not include_special:
+        q = q.filter(Kid.is_special == False)  # noqa: E712
+    return q.all()
 
 
 @router.get("/{kid_id}", response_model=KidOut)

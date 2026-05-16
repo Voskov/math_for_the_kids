@@ -1,6 +1,6 @@
 # Backlog
 
-Last updated: 2026-05-12
+Last updated: 2026-05-16
 
 ## UX Issues
 
@@ -66,6 +66,7 @@ Last updated: 2026-05-12
 
 ### Backlog
 - [x] **Dark mode** (2026-05-09) — `html.dark` CSS vars; auto by time-of-day (dark 19:00–07:00); toggle button (☀️/🌙) fixed top corner; persists in `localStorage`.
+- [ ] **Test & Guest users** — two special kids hidden from KidSelect by default; toggled on via cog menu (⚙️); visibility resets to hidden on every new page load (sessionStorage, not localStorage). (1) **בדיקה** (test) — for dev/tinkering; levels persist in DB like real kids but isolated. (2) **אורח** (guest) — for demos; levels also persist but expected to be toyed with freely. Implementation: seed both kids in `database.py`; add `showSpecialKids` flag to `sessionStorage`; cog menu toggle sets it and re-renders KidSelect; KidSelect filters them out unless flag is set. No auto-reset of levels — isolation comes from being separate DB rows.
 - [ ] **Live timer in session header** — currently only on Summary
 - [ ] **Real images for hebrew_letters** — replace emoji in `_WORD_BANK` (`backend/generators/hebrew_letters.py`); render `<img>` in `Session.tsx`. Candidate source: totcards.com
 - [ ] **Kid profile editor UI** — names + avatars (currently hardcoded seed)

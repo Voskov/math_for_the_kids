@@ -11,6 +11,7 @@ class Kid(Base):
     name: Mapped[str] = mapped_column(String, nullable=False)
     avatar_emoji: Mapped[str] = mapped_column(String, default="🧒")
     starting_grade: Mapped[str] = mapped_column(String)  # "preschool", "1st", "2nd"
+    is_special: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, server_default="0")
 
     levels: Mapped[list["KidTopicLevel"]] = relationship("KidTopicLevel", back_populates="kid")
     sessions: Mapped[list["Session"]] = relationship("Session", back_populates="kid")

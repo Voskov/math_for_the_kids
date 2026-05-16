@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import {
   CartesianGrid,
   ComposedChart,
@@ -48,6 +48,16 @@ function formatDate(iso: string) {
 
 export default function Admin({ onBack }: Props) {
   const [tab, setTab] = useState<Tab>("overview");
+  const [showSpecial, setShowSpecial] = useState(
+    () => sessionStorage.getItem("showSpecialKids") === "1"
+  );
+
+  const toggleSpecial = useCallback(() => {
+    const next = !showSpecial;
+    if (next) sessionStorage.setItem("showSpecialKids", "1");
+    else sessionStorage.removeItem("showSpecialKids");
+    setShowSpecial(next);
+  }, [showSpecial]);
 
   return (
     <div style={styles.container}>
@@ -56,7 +66,13 @@ export default function Admin({ onBack }: Props) {
           → {S.back}
         </button>
         <h2 style={styles.title}>{S.adminTitle}</h2>
-        <span />
+        <button
+          onClick={toggleSpecial}
+          title={showSpecial ? S.hideSpecialKids : S.showSpecialKids}
+          style={{ ...styles.specialToggle, ...(showSpecial ? styles.specialToggleOn : null) }}
+        >
+          🧪
+        </button>
       </div>
 
       <div style={styles.tabs}>
@@ -482,6 +498,16 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 12,
   },
   muted: { color: "var(--text-muted)", padding: 12 },
+  specialToggle: {
+    background: "none",
+    border: "1px solid var(--border)",
+    borderRadius: 8,
+    fontSize: 18,
+    padding: "4px 8px",
+    cursor: "pointer",
+    opacity: 0.4,
+  },
+  specialToggleOn: { opacity: 1, borderColor: "var(--primary)" },
   levelInput: {
     width: 52,
     padding: "2px 4px",

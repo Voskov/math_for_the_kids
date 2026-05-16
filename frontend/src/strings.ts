@@ -80,4 +80,7 @@ export const S = {
   adminWrong: "שגוי",
 
   wikiLinkLabel: "ויקיפדיה",
+
+  showSpecialKids: "הצג בדיקה / אורח",
+  hideSpecialKids: "הסתר בדיקה / אורח",
 };
