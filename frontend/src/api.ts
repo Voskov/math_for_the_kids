@@ -137,4 +137,10 @@ export const api = {
   getKidTopicHistory: (kid_id: number, topic: string) =>
     req<HistoryPoint[]>(`/admin/kids/${kid_id}/topics/${topic}/history`),
   getRecentActivity: () => req<ActivityRow[]>("/admin/activity"),
+  setKidTopicLevel: (kid_id: number, topic: string, level: number) =>
+    req<void>(`/admin/kids/${kid_id}/topics/${topic}/level`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ level }),
+    }),
 };

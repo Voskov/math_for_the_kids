@@ -167,6 +167,31 @@ def kid_topic_history(
     ]
 
 
+class SetLevelIn(BaseModel):
+    level: float
+
+
+@router.put("/kids/{kid_id}/topics/{topic}/level", status_code=204)
+def set_kid_topic_level(
+    kid_id: int, topic: str, body: SetLevelIn, db: DBSession = Depends(get_db)
+):
+    if not db.get(Kid, kid_id):
+        raise HTTPException(status_code=404, detail="Kid not found")
+    if not (1 <= body.level <= 20):
+        raise HTTPException(status_code=422, detail="level must be 1–20")
+    row = (
+        db.query(KidTopicLevel)
+        .filter(KidTopicLevel.kid_id == kid_id, KidTopicLevel.topic == topic)
+        .first()
+    )
+    if row is None:
+        db.add(KidTopicLevel(kid_id=kid_id, topic=topic, difficulty_level=body.level, score_accumulator=0.0))
+    else:
+        row.difficulty_level = body.level
+        row.score_accumulator = 0.0
+    db.commit()
+
+
 @router.get("/activity", response_model=list[ActivityRowOut])
 def activity(limit: int = 30, db: DBSession = Depends(get_db)):
     rows = _session_rows(db, None, limit)

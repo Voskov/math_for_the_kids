@@ -102,11 +102,62 @@ function TabButton({
   );
 }
 
+function LevelCell({ kidId, topic, value, onSaved }: { kidId: number; topic: string; value: number | null; onSaved: () => void }) {
+  const [editing, setEditing] = useState(false);
+  const [input, setInput] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  function startEdit() {
+    setInput(value != null ? String(Math.floor(value)) : "");
+    setEditing(true);
+  }
+
+  async function save() {
+    const n = Number(input);
+    if (!Number.isInteger(n) || n < 1 || n > 20) return;
+    setSaving(true);
+    await api.setKidTopicLevel(kidId, topic, n);
+    setSaving(false);
+    setEditing(false);
+    onSaved();
+  }
+
+  function onKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter") save();
+    if (e.key === "Escape") setEditing(false);
+  }
+
+  if (editing) {
+    return (
+      <td style={styles.td}>
+        <input
+          autoFocus
+          type="number"
+          min={1}
+          max={20}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={onKeyDown}
+          onBlur={() => setEditing(false)}
+          style={styles.levelInput}
+          disabled={saving}
+        />
+      </td>
+    );
+  }
+
+  return (
+    <td style={{ ...styles.td, cursor: "pointer" }} onClick={startEdit} title="לחץ לשינוי">
+      {value != null ? Math.floor(value) : "—"}
+    </td>
+  );
+}
+
 function OverviewTab() {
   const [data, setData] = useState<OverviewKid[] | null>(null);
-  useEffect(() => {
-    api.getAdminOverview().then(setData);
-  }, []);
+
+  function load() { api.getAdminOverview().then(setData); }
+  useEffect(load, []);
 
   const topics = useMemo(() => {
     if (!data) return [];
@@ -143,9 +194,13 @@ function OverviewTab() {
                   <span style={styles.avatar}>{k.avatar_emoji}</span> {k.name}
                 </td>
                 {topics.map((t) => (
-                  <td key={t} style={styles.td}>
-                    {byTopic.has(t) ? Math.floor(byTopic.get(t)!) : "—"}
-                  </td>
+                  <LevelCell
+                    key={t}
+                    kidId={k.kid_id}
+                    topic={t}
+                    value={byTopic.has(t) ? byTopic.get(t)! : null}
+                    onSaved={load}
+                  />
                 ))}
                 <td style={styles.td}>{k.total_sessions}</td>
                 <td style={styles.td}>{k.total_problems_answered}</td>
@@ -427,4 +482,13 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 12,
   },
   muted: { color: "var(--text-muted)", padding: 12 },
+  levelInput: {
+    width: 52,
+    padding: "2px 4px",
+    fontSize: 14,
+    border: "1px solid var(--primary)",
+    borderRadius: 4,
+    background: "var(--surface)",
+    textAlign: "center" as const,
+  },
 };
